@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:6.0.4
+    restart: always
+    container_name: mongo
+    ports:
+      - 27017:27017
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./mongo/db/:/data/db/
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - 8081:8081
+    depends_on:
+      - "mongo"
+  # lims-backend:
+  #   image: wangyucode/deno-backend
+  #   container_name: deno
+  #   restart: unless-stopped
+  #   ports:
+  #     - 18082:8082
+  #   volumes:
+  #     - ./prod.env:/app/.env:ro
+  #     - ./log/:/app/log/
+  #   depends_on:
+  #     - "mongo"

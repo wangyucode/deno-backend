@@ -1,0 +1,46 @@
+import { Status, STATUS_TEXT } from "../deps.ts";
+import { AuthUser, Context, UserRole } from "./types.ts";
+import { getErrorResult, getJwtPayload } from "./utils.ts";
+
+export async function errorMiddleware(
+  ctx: Context,
+  next: () => Promise<unknown>,
+): Promise<void> {
+  try {
+    await next();
+  } catch (err) {
+    const status: Status = err.status || err.statusCode ||
+      Status.InternalServerError;
+    const message = err.message || STATUS_TEXT[status];
+    console.warn(status, message);
+    ctx.response.status = status;
+    ctx.response.body = getErrorResult(message);
+  }
+}
+
+export function userGuard(...roles: UserRole[]) {
+  return async function userGuard(
+    ctx: Context,
+    next: () => Promise<unknown>,
+  ): Promise<void> {
+    const authHeader = ctx.request.headers.get("Authorization");
+    if(!authHeader) ctx.throw(401);
+
+    const token = authHeader.replace(/^bearer/i, "").trim();
+    const user = await getJwtPayload(token);
+    
+    if (!user) ctx.throw(401);
+    ctx.user = user as AuthUser;
+
+    if (roles.length > 0) {
+      roles.push(UserRole.COOK);
+      const hasPermission = user.roles.every((r) =>
+        roles.includes(r as UserRole)
+      );
+      if (!hasPermission) {
+        ctx.throw(403);
+      }
+    }
+    await next();
+  };
+}

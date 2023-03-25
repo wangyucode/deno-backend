@@ -1,0 +1,10 @@
+log/
+mongo/
+prod.env
+README.md
+.github/
+.vscode/
+.hooks/
+http/
+Dockerfile
+docker-compose.yml
