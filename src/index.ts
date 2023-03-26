@@ -9,7 +9,7 @@ import { sendEmail } from "./notifier.ts";
 function startHttpServer() {
   const app = new Application();
   app.use(middleware.errorMiddleware);
-  app.use(middleware.jwtMiddleware);
+  app.use(middleware.loggerMiddleware);
   app.use(router.routes());
   app.use(router.allowedMethods());
 

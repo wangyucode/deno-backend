@@ -1,6 +1,18 @@
 import { Status, STATUS_TEXT } from "../deps.ts";
+import { logger } from "./logger.ts";
 import { AuthUser, Context, UserRole } from "./types.ts";
 import { getErrorResult, getJwtPayload } from "./utils.ts";
+
+export async function loggerMiddleware(
+  ctx: Context,
+  next: () => Promise<unknown>,
+): Promise<void> {
+  const start = Date.now();
+  await next();
+  const ms = Date.now() - start;
+  ctx.response.headers.set("X-Response-Time", `${ms}ms`);
+  logger.info(`${ctx.request.method} ${ctx.request.url} - ${ms}ms`);
+}
 
 export async function errorMiddleware(
   ctx: Context,
