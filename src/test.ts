@@ -9,4 +9,4 @@ const hash = await bcrypt.hash("123456");
 
 logger.debug(hash);
 logger.debug(await bcrypt.compare("123456", hash));
-// await sendDingTalkMessage('这是一条测试');
+

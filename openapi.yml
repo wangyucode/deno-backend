@@ -1,0 +1,142 @@
+openapi: 3.0.0
+info:
+  title: WYCODE API Docs - OpenAPI 3.0
+  description: |
+    This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io).
+  contact:
+    email: wangyu@wycode.cn
+  version: 2023.4.5
+servers:
+  - url: http://localhost:8083/api/v1
+tags:
+  - name: public
+  - name: private
+paths:
+  /:
+    get:
+      tags:
+        - public
+      summary: get state and all routes
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/State'
+  /comment:
+    get:
+      tags:
+        - public
+      summary: get all comments
+      parameters:
+        - name: a
+          in: query
+          description: app
+          required: true
+          schema:
+            type: string
+        - name: k
+          in: query
+          description: key
+          required: true
+          schema:
+            type: string
+        - name: t
+          in: query
+          description: topic
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+    post:
+      tags:
+        - public
+      summary: add a comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /wechat/apps:
+    get:
+      tags:
+        - public
+      summary: get wechat apps
+      parameters:
+        - name: Referer
+          in: header
+          description: referer
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+
+components:
+  schemas:
+    State:
+      type: object
+      properties:
+        state:
+          type: string
+          description: state
+          default: ok
+        routes:
+          type: array
+          description: all routes
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: path
+              methods:
+                type: array
+                description: method
+              paramNames:
+                type: array
+                description: method
+    CommonResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        payload:
+          type: object
+    Comment:
+      type: object
+      properties:
+        type:
+          type: number
+        content:
+          type: string
+        app:
+          type: string
+        key:
+          type: string
+        topic:
+          type: string
+        user:
+          type: string
+        to:
+          type: object
+        toId:
+          type: string

@@ -1,19 +1,20 @@
 import * as middleware from "./middleware.ts";
 import { router } from "./routes.ts";
 import { connectToMongo } from "./mongo.ts";
-import { Application, format } from "../deps.ts";
-import { isProd, loadEnv } from "./env.ts";
+import { Application, format, oakCors } from "../deps.ts";
+import { env, isProd, loadEnv } from "./env.ts";
 import { logger, setupLogger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
 
 function startHttpServer() {
   const app = new Application();
+  app.use(oakCors());
   app.use(middleware.errorMiddleware);
   app.use(middleware.loggerMiddleware);
   app.use(router.routes());
   app.use(router.allowedMethods());
 
-  app.listen({ port: 8082 });
+  app.listen({ port: Number.parseInt(env.PORT) });
 }
 
 loadEnv()
@@ -21,7 +22,7 @@ loadEnv()
   .then(connectToMongo)
   .then(startHttpServer)
   .then(() => {
-    logger.info("server listening on 8082");
+    logger.info(`server listening on ${env.PORT}`);
     if (isProd()) {
       sendEmail(
         `lims-backend start successfully on: ${

@@ -10,7 +10,7 @@ export async function loggerMiddleware(
   const start = Date.now();
   await next();
   const ms = Date.now() - start;
-  ctx.response.headers.set("X-Response-Time", `${ms}ms`);
+  // ctx.response.headers.set("X-Response-Time", `${ms}ms`);
   logger.info(`${ctx.request.method} ${ctx.request.url} - ${ms}ms`);
 }
 

@@ -18,14 +18,13 @@ services:
       - 8081:8081
     depends_on:
       - "mongo"
-  # lims-backend:
-  #   image: wangyucode/deno-backend
-  #   container_name: deno
-  #   restart: unless-stopped
-  #   ports:
-  #     - 18082:8082
-  #   volumes:
-  #     - ./prod.env:/app/.env:ro
-  #     - ./log/:/app/log/
-  #   depends_on:
-  #     - "mongo"
+  swagger-ui:
+    image: swaggerapi/swagger-ui:v4.18.2
+    container_name: swagger-ui
+    restart: unless-stopped
+    ports:
+      - 8084:8080
+    volumes:
+      - ./openapi.yml:/openapi.yml:ro
+    environment:
+      - SWAGGER_JSON=/openapi.yml
