@@ -25,16 +25,16 @@ loadEnv()
     logger.info(`server listening on ${env.PORT}`);
     if (isProd()) {
       sendEmail(
-        `lims-backend start successfully on: ${
+        `deno-backend start successfully on: ${
           format(new Date(), "yyyy/MM/dd HH:mm:ss")
         }.`,
       );
     }
   })
   .catch((e) => {
-    console.error("lims-backend 启动时发生错误", e);
+    console.error("deno-backend 启动时发生错误", e);
     if (isProd()) {
-      sendEmail(`lims-backend start failed: ${e.toString()}`);
+      sendEmail(`deno-backend start failed: ${e.toString()}`);
     }
-    logger.error("lims-backend 启动时发生错误", e);
+    logger.error("deno-backend 启动时发生错误", e);
   });

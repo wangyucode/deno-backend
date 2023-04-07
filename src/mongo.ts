@@ -10,10 +10,16 @@ let retry = 0;
 export enum COLLECTIONS {
   COMMENT_APP = "mongoCommentApp",
   CONFIG = "config",
+  CLIPBOARD = 'clipboard',
   COMMENT = "comments",
   ACCESS_COUNT = "accessCount",
   ACCESS_ERROR = "accessError",
   WECHAT_APP = 'wechatApp',
+}
+
+export enum CONFIG_KEYS {
+  CONFIG_NOTIFICATION_CLIPBOARD = 'CONFIG_NOTIFICATION_CLIPBOARD',
+  CONFIG_PATCH_RECORD = 'CONFIG_PATCH_RECORD',
 }
 
 export async function connectToMongo(): Promise<void> {

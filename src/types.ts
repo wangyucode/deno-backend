@@ -36,3 +36,5 @@ export type EmailTransporter = {
 }
 
 
+export const Apps = ['dota', 'clipboard', 'comments', 'other'];
+

@@ -10,13 +10,16 @@ info:
 servers:
   - url: http://localhost:8083/api/v1
 tags:
-  - name: public
+  - name: basic
+  - name: comment
+  - name: clipboard
+  - name: analysis
   - name: private
 paths:
   /:
     get:
       tags:
-        - public
+        - basic
       summary: get state and all routes
       responses:
         '200':
@@ -27,7 +30,7 @@ paths:
   /comment:
     get:
       tags:
-        - public
+        - comment
       summary: get all comments
       parameters:
         - name: a
@@ -56,7 +59,7 @@ paths:
                 $ref: '#/components/schemas/CommonResult'
     post:
       tags:
-        - public
+        - comment
       summary: add a comment
       requestBody:
         content:
@@ -72,7 +75,7 @@ paths:
   /wechat/apps:
     get:
       tags:
-        - public
+        - basic
       summary: get wechat apps
       parameters:
         - name: Referer
@@ -87,7 +90,139 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
-
+  /clipboard/wx/{code}:
+    get:
+      tags:
+        - clipboard
+      summary: get clipboard by wechat auth code
+      parameters:
+        - name: code
+          in: path
+          description: wx auth code
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /clipboard/notification:
+    get:
+      tags:
+        - clipboard
+      summary: get clipboard notification
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /clipboard/{id}:
+    get:
+      tags:
+        - clipboard
+      summary: get clipboard by id
+      parameters:
+        - name: id
+          in: path
+          description: clipboard id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /clipboard/openid/{openid}:
+    get:
+      tags:
+        - clipboard
+      summary: get clipboard by openid
+      parameters:
+        - name: openid
+          in: path
+          description: openid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /clipboard:
+    post:
+      tags:
+        - clipboard
+      summary: change content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clipboard'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /analysis/blogs:
+    get:
+      tags:
+        - analysis
+      summary: get blogs access
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /analysis/apps:
+    get:
+      tags:
+        - analysis
+      summary: get apps access
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /analysis/records:
+    get:
+      tags:
+        - analysis
+      summary: get access records
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /analysis/errors:
+    get:
+      tags:
+        - analysis
+      summary: get error records
+      parameters:
+        - name: size
+          in: query
+          description: page size
+          required: true
+          default: 10
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
 components:
   schemas:
     State:
@@ -139,4 +274,11 @@ components:
         to:
           type: object
         toId:
+          type: string
+    Clipboard:
+      type: object
+      properties:
+        _id:
+          type: string
+        content:
           type: string
