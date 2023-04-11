@@ -12,4 +12,3 @@ logger.debug(hash);
 logger.debug(await bcrypt.compare("123456", hash));
 
 logger.debug(generateShortUuid());
-

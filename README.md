@@ -1,6 +1,7 @@
 # deno-backend
 
-This is the replacement for [node-backend](https://github.com/wangyucode/node-backend)
+This is the replacement for
+[node-backend](https://github.com/wangyucode/node-backend)
 
 ## pre step 1: install the git hooks
 

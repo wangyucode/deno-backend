@@ -32,9 +32,9 @@ export enum UserRole {
 }
 
 export type EmailTransporter = {
-  sendMail: (message: { from: string; subject: string; text: string; to: string; }) => Promise<void>;
-}
+  sendMail: (
+    message: { from: string; subject: string; text: string; to: string },
+  ) => Promise<void>;
+};
 
-
-export const Apps = ['dota', 'clipboard', 'comments', 'other'];
-
+export const Apps = ["dota", "clipboard", "comments", "other"];

@@ -18,24 +18,33 @@ import { logger } from "./logger.ts";
 //   logger.info(`sent ding-talk message: ${await response.text()}`);
 // }
 
-let transporter: {sendMail: (message: { from: string; subject: string; text: string; to: string; }) => Promise<void>};
-const ADMIN_EMAIL = 'wangyu@wycode.cn'
+let transporter: {
+  sendMail: (
+    message: { from: string; subject: string; text: string; to: string },
+  ) => Promise<void>;
+};
+const ADMIN_EMAIL = "wangyu@wycode.cn";
 
-export async function sendEmail(text: string): Promise<void>{
+export async function sendEmail(text: string): Promise<void> {
   if (!transporter) {
     transporter = createTransport({
-        host: "smtp.exmail.qq.com",
-        port: 465,
-        secure: true,
-        auth: {
-            user: ADMIN_EMAIL,
-            pass: env.MAIL_PASSWORD
-        }
+      host: "smtp.exmail.qq.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: ADMIN_EMAIL,
+        pass: env.MAIL_PASSWORD,
+      },
     });
 
-    const message = { from: ADMIN_EMAIL, subject: '【Deno】后端推送', text, to: ADMIN_EMAIL };
+    const message = {
+      from: ADMIN_EMAIL,
+      subject: "【Deno】后端推送",
+      text,
+      to: ADMIN_EMAIL,
+    };
 
     await transporter.sendMail(message);
     logger.info(`sent email to: ${ADMIN_EMAIL}`);
-}
+  }
 }

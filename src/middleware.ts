@@ -29,7 +29,9 @@ export async function errorMiddleware(
     ctx.response.body = getErrorResult(message);
     if (status >= 500) {
       logger.error(status, message, err.stack);
-      if(isProd()) sendEmail(`Unexpected error: ${status} ${message} \n ${err.stack}`);
+      if (isProd()) {
+        sendEmail(`Unexpected error: ${status} ${message} \n ${err.stack}`);
+      }
     }
   }
 }

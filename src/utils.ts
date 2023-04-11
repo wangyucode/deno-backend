@@ -1,4 +1,4 @@
-import { create, getNumericDate, verify} from "../deps.ts";
+import { create, getNumericDate, verify } from "../deps.ts";
 import { logger } from "./logger.ts";
 import { UserRole } from "./types.ts";
 

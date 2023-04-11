@@ -40,7 +40,9 @@ export async function saveById(ctx: Context) {
       $set: { content: data.content, lastUpdate: new Date() },
     },
   );
-  ctx.response.body = result.modifiedCount ? getDataResult(data._id) : getErrorResult("未找到");
+  ctx.response.body = result.modifiedCount
+    ? getDataResult(data._id)
+    : getErrorResult("未找到");
 }
 
 export async function getByWxCode(ctx: Context) {
