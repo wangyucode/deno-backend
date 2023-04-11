@@ -22,7 +22,7 @@ export async function setupLogger(): Promise<void> {
       },
       "PRODUCT": {
         level: "INFO",
-        handlers: ["file", "console"],
+        handlers: ["console", "file"],
       },
     },
   };

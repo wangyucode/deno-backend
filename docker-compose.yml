@@ -28,3 +28,15 @@ services:
       - ./openapi.yml:/openapi.yml:ro
     environment:
       - SWAGGER_JSON=/openapi.yml
+  # deno:
+  #   image: wangyucode/deno-backend
+  #   container_name: deno
+  #   restart: unless-stopped
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #   depends_on:
+  #     - "mongo"
+  #   volumes:
+  #     - ./nginx/log/:/app/nginx/log
+  #     - ./log/:/app/log/
+  #     - ./.prod.env:/app/.env:ro

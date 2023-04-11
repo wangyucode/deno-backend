@@ -1,4 +1,4 @@
-import { createTransport } from "../deps.ts";
+import { SMTPClient } from "../deps.ts";
 import { env } from "./env.ts";
 import { logger } from "./logger.ts";
 
@@ -18,33 +18,31 @@ import { logger } from "./logger.ts";
 //   logger.info(`sent ding-talk message: ${await response.text()}`);
 // }
 
-let transporter: {
-  sendMail: (
-    message: { from: string; subject: string; text: string; to: string },
-  ) => Promise<void>;
-};
+let client: SMTPClient;
 const ADMIN_EMAIL = "wangyu@wycode.cn";
 
-export async function sendEmail(text: string): Promise<void> {
-  if (!transporter) {
-    transporter = createTransport({
-      host: "smtp.exmail.qq.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: ADMIN_EMAIL,
-        pass: env.MAIL_PASSWORD,
+export async function sendEmail(content: string): Promise<void> {
+  if (!client) {
+    client = new SMTPClient({
+      connection: {
+        hostname: "smtp.qq.com",
+        port: 465,
+        tls: true,
+        auth: {
+          username: "wayne001@vip.qq.com",
+          password: env.MAIL_PASSWORD,
+        },
       },
     });
-
-    const message = {
-      from: ADMIN_EMAIL,
-      subject: "【Deno】后端推送",
-      text,
-      to: ADMIN_EMAIL,
-    };
-
-    await transporter.sendMail(message);
-    logger.info(`sent email to: ${ADMIN_EMAIL}`);
   }
+
+  const message = {
+    from: "wayne001@vip.qq.com",
+    subject: "【Deno】后端推送",
+    to: ADMIN_EMAIL,
+    content,
+  };
+
+  await client.send(message);
+  logger.info(`sent email to: ${ADMIN_EMAIL}`);
 }
