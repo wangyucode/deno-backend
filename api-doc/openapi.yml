@@ -2,13 +2,13 @@ openapi: 3.0.0
 info:
   title: WYCODE API Docs - OpenAPI 3.0
   description: |
-    This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more about
-    Swagger at [https://swagger.io](https://swagger.io).
+    This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
   version: 2023.4.5
 servers:
   - url: http://localhost:8083/api/v1
+  - url: https://wycode.cn/api/v1
 tags:
   - name: basic
   - name: comment
@@ -27,6 +27,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/State'
+  /email:
+    post:
+      tags:
+        - basic
+      summary: send email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
   /comment:
     get:
       tags:
@@ -279,6 +295,17 @@ components:
       type: object
       properties:
         _id:
+          type: string
+        content:
+          type: string
+    Email:
+      type: object
+      properties:
+        key:
+          type: string
+        to:
+          type: string
+        subject:
           type: string
         content:
           type: string

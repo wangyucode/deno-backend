@@ -6,11 +6,10 @@
   "configurations": [
     {
       "request": "launch",
-      "name": "Launch Program",
+      "name": "index",
       "type": "node",
-      "program": "${workspaceFolder}/src/index.ts",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "C:\\Users\\www_w\\.deno\\bin\\deno.EXE",
+      "runtimeExecutable": "deno",
       "runtimeArgs": [
         "run",
         "--inspect-wait",
@@ -20,19 +19,18 @@
       "attachSimplePort": 9229
     },
     {
-      "name": "Deno: Debug API",
+      "name": "test",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "deno",
       "runtimeArgs": [
         "run",
-        "--inspect-brk",
-        "-A",
-        "--unstable",
-        "src/index.ts"
+        "--inspect-wait",
+        "--allow-all",
+        "src/test.ts"
       ],
-      "attachSimplePort": 9229
+      "attachSimplePort": 9230
     }
   ]
 }

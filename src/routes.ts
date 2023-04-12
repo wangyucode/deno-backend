@@ -7,6 +7,7 @@ import * as comments from "./controllers/comment.ts";
 import * as wechat from "./controllers/wechat.ts";
 import * as clipboard from "./controllers/clipboard.ts";
 import * as analysis from "./controllers/analysis.ts";
+import * as email from "./controllers/email.ts";
 import { userGuard } from "./middleware.ts";
 import { UserRole } from "./types.ts";
 
@@ -17,6 +18,7 @@ export const router = new Router()
   .get("/config", config.getConfig)
   .post("/config", userGuard(UserRole.ADMIN), config.setConfig)
   .delete("/config/:id", userGuard(UserRole.ADMIN), config.deleteConfig)
+  .post("/email", email.send)
   .post("/comment", comments.postComment)
   .get("/comment", comments.getComments)
   .get("/wechat/apps", wechat.getWechatApps)

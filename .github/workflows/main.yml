@@ -31,7 +31,15 @@ jobs:
           tags: |
             wangyucode/deno-backend:latest
             wangyucode/deno-backend:0.0.1
-
-      # - name: Call watchtower to check image
-      #   run: |
-      #     curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" https://wycode.cn:8086/v1/update
+      - name: Call watchtower to check image
+        run: |
+          curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" wycode.cn:8086/v1/update
+      - name: upload api docs
+        uses: wangyucode/sftp-upload-action@v2.0.2
+        with:
+          host: 'wycode.cn'
+          privateKey: ${{ secrets.SERVER_KEY }}
+          localDir: 'api-doc'
+          dryRun: false
+          compress: true
+          remoteDir: '/root/data/nginx/www/swagger-ui/'

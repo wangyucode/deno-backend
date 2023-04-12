@@ -57,7 +57,7 @@ export async function postComment(ctx: Context) {
   const { type, content, app, key, topic, user, to, toId } = await ctx.request
     .body()
     .value;
-  logger.info("postComment-->", type, content, app, key, topic, user, to);
+  logger.info("postComment-->", type, content, app, key, topic, user, to, toId);
   // 评论类型，0.评论，1.点赞
   if ((typeof type) !== "number" || type < 0 || type > 1) {
     ctx.throw(400, "评论类型不合法");

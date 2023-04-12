@@ -19,9 +19,13 @@ import { logger } from "./logger.ts";
 // }
 
 let client: SMTPClient;
-const ADMIN_EMAIL = "wangyu@wycode.cn";
+const FROM_EMAIL = "wayne001@vip.qq.com";
 
-export async function sendEmail(content: string): Promise<void> {
+export async function sendEmail(
+  content: string,
+  subject = "【Deno】后端推送",
+  to = "wangyu@wycode.cn",
+): Promise<void> {
   if (!client) {
     client = new SMTPClient({
       connection: {
@@ -29,7 +33,7 @@ export async function sendEmail(content: string): Promise<void> {
         port: 465,
         tls: true,
         auth: {
-          username: "wayne001@vip.qq.com",
+          username: FROM_EMAIL,
           password: env.MAIL_PASSWORD,
         },
       },
@@ -37,12 +41,12 @@ export async function sendEmail(content: string): Promise<void> {
   }
 
   const message = {
-    from: "wayne001@vip.qq.com",
-    subject: "【Deno】后端推送",
-    to: ADMIN_EMAIL,
+    from: FROM_EMAIL,
+    subject,
+    to,
     content,
   };
 
   await client.send(message);
-  logger.info(`sent email to: ${ADMIN_EMAIL}`);
+  logger.info(`sent email to: ${to}`);
 }
