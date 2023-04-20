@@ -14,3 +14,4 @@ logger.debug(await bcrypt.compare("123456", hash));
 
 logger.debug(generateShortUuid());
 await sendEmail("test");
+await sendEmail("test1");

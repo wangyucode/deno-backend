@@ -49,4 +49,5 @@ export async function sendEmail(
 
   await client.send(message);
   logger.info(`sent email to: ${to}`);
+  await client.close();
 }

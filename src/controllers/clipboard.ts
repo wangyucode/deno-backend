@@ -1,5 +1,6 @@
 import { env } from "../env.ts";
 import { COLLECTIONS, CONFIG_KEYS, db } from "../mongo.ts";
+import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
 import { getConfig } from "./config.ts";
@@ -67,13 +68,14 @@ export async function getByWxCode(ctx: Context) {
       result = {
         _id: id,
         content:
-          "请输入你想保存的内容,内容可在网页端: https://wycode.cn/clipboard 使用查询码查询,或小程序免登录查询。",
+          "请输入你想保存的内容,内容可在网页端: https://wycode.cn/clipboard.html 使用查询码查询,或小程序免登录查询。",
         tips: "",
         openid,
         createDate: now,
         lastUpdate: now,
       };
       await cc.insertOne(result);
+      sendEmail("有新的用户注册了剪贴板服务", "剪贴板服务");
       ctx.response.body = getDataResult(result);
     }
   } else {
