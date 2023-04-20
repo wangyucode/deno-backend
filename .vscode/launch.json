@@ -6,31 +6,17 @@
   "configurations": [
     {
       "request": "launch",
-      "name": "index",
-      "type": "node",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "deno",
-      "runtimeArgs": [
-        "run",
-        "--inspect-wait",
-        "--allow-all",
-        "src/index.ts"
-      ],
-      "attachSimplePort": 9229
-    },
-    {
       "name": "test",
       "type": "node",
-      "request": "launch",
+      "program": "${workspaceFolder}/src/test.ts",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "deno",
       "runtimeArgs": [
         "run",
         "--inspect-wait",
-        "--allow-all",
-        "src/test.ts"
+        "--allow-all"
       ],
-      "attachSimplePort": 9230
+      "attachSimplePort": 9229
     }
   ]
 }

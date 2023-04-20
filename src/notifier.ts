@@ -18,7 +18,6 @@ import { logger } from "./logger.ts";
 //   logger.info(`sent ding-talk message: ${await response.text()}`);
 // }
 
-let client: SMTPClient;
 const FROM_EMAIL = "wayne001@vip.qq.com";
 
 export async function sendEmail(
@@ -26,19 +25,17 @@ export async function sendEmail(
   subject = "【Deno】后端推送",
   to = "wangyu@wycode.cn",
 ): Promise<void> {
-  if (!client) {
-    client = new SMTPClient({
-      connection: {
-        hostname: "smtp.qq.com",
-        port: 465,
-        tls: true,
-        auth: {
-          username: FROM_EMAIL,
-          password: env.MAIL_PASSWORD,
-        },
+  const client = new SMTPClient({
+    connection: {
+      hostname: "smtp.qq.com",
+      port: 465,
+      tls: true,
+      auth: {
+        username: FROM_EMAIL,
+        password: env.MAIL_PASSWORD,
       },
-    });
-  }
+    },
+  });
 
   const message = {
     from: FROM_EMAIL,
@@ -49,4 +46,5 @@ export async function sendEmail(
 
   await client.send(message);
   logger.info(`sent email to: ${to}`);
+  await client.close();
 }
