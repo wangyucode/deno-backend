@@ -27,7 +27,4 @@ export const router = new Router()
   .get("/clipboard/:id", clipboard.getById)
   .get("/clipboard/openid/:openid", clipboard.getByOpenid)
   .post("/clipboard", clipboard.saveById)
-  .get("/analysis/blogs", analysis.getBlogs)
-  .get("/analysis/apps", analysis.getApps)
-  .get("/analysis/records", analysis.getRecords)
-  .get("/analysis/errors", analysis.getErrors);
+  .get("/analysis/dashboard", analysis.getDashboardUrl);

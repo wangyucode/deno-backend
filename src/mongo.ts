@@ -12,8 +12,6 @@ export enum COLLECTIONS {
   CONFIG = "config",
   CLIPBOARD = "clipboard",
   COMMENT = "comments",
-  ACCESS_COUNT = "accessCount",
-  ACCESS_ERROR = "accessError",
   WECHAT_APP = "wechatApp",
 }
 

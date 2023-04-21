@@ -27,6 +27,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/State'
+
   /email:
     post:
       tags:
@@ -43,6 +44,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /comment:
     get:
       tags:
@@ -88,6 +90,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /wechat/apps:
     get:
       tags:
@@ -106,6 +109,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /clipboard/wx/{code}:
     get:
       tags:
@@ -124,6 +128,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /clipboard/notification:
     get:
       tags:
@@ -135,6 +140,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /clipboard/{id}:
     get:
       tags:
@@ -153,6 +159,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /clipboard/openid/{openid}:
     get:
       tags:
@@ -171,6 +178,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
   /clipboard:
     post:
       tags:
@@ -187,58 +195,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
-  /analysis/blogs:
+
+  /analysis/dashboard:
     get:
       tags:
         - analysis
-      summary: get blogs access
+      summary: get dashboard url
       responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
-  /analysis/apps:
-    get:
-      tags:
-        - analysis
-      summary: get apps access
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommonResult'
-  /analysis/records:
-    get:
-      tags:
-        - analysis
-      summary: get access records
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommonResult'
-  /analysis/errors:
-    get:
-      tags:
-        - analysis
-      summary: get error records
-      parameters:
-        - name: size
-          in: query
-          description: page size
-          required: true
-          default: 10
-          schema:
-            type: number
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommonResult'
+
 components:
   schemas:
     State:
