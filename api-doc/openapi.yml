@@ -5,7 +5,7 @@ info:
     This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
-  version: 2023.4.5
+  version: 2023.4.22
 servers:
   - url: http://localhost:8083/api/v1
   - url: https://wycode.cn/api/v1
@@ -189,6 +189,18 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Clipboard'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+
+  /analysis/blogs:
+    get:
+      tags:
+        - analysis
+      summary: get blogs access
       responses:
         '200':
           content:

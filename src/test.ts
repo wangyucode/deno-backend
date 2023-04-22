@@ -1,6 +1,7 @@
-import { bcrypt } from "../deps.ts";
+// deno-lint-ignore-file
+import { bcrypt, OpenApi, Sls } from "../deps.ts";
 import { generateShortUuid } from "./controllers/clipboard.ts";
-import { loadEnv } from "./env.ts";
+import { env, loadEnv } from "./env.ts";
 import { logger, setupLogger } from "./logger.ts";
 
 await loadEnv();
