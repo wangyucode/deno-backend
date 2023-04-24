@@ -68,7 +68,7 @@ export async function getByWxCode(ctx: Context) {
       result = {
         _id: id,
         content:
-          "请输入你想保存的内容,内容可在网页端: https://wycode.cn/clipboard.html 使用查询码查询,或小程序免登录查询。",
+          "请输入你想保存的内容,内容可在网页端: https://wycode.cn/clipboard 使用查询码查询,或小程序免登录查询。",
         tips: "",
         openid,
         createDate: now,
