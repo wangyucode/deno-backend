@@ -13,7 +13,12 @@ export class Room {
 
   join(user: User) {
     this.users.set(user.id, user);
-    user.join(this);
+    user.room = this;
+  }
+
+  send(msg: Message) {
+    this.users.forEach((user) => user.send(msg));
+    this.messages.push(msg);
   }
 }
 

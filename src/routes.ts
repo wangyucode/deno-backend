@@ -30,4 +30,4 @@ export const router = new Router()
   .post("/clipboard", clipboard.saveById)
   .get("/analysis/blogs", analysis.getBlogs)
   .get("/analysis/dashboard", analysis.getDashboardUrl)
-  .post("/ws/create", chat.create);
+  .get("/ws/create", chat.create);

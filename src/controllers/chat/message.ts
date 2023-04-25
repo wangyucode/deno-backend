@@ -3,7 +3,8 @@ import { User } from "./user.ts";
 export class Message {
   constructor(
     public type: MessageType,
-    public content: string,
+    // deno-lint-ignore no-explicit-any
+    public content: any,
     public time: Date,
     public sender: User | string,
   ) {}
