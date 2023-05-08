@@ -10,20 +10,18 @@ const rooms = new Map<number, Room>();
 const unusedId: number[] = [];
 
 function init(): void {
-  for (let i = 1; i < MAX_ROOMS; i++) {
+  for (let i = 0; i < MAX_ROOMS; i++) {
     unusedId.push(i);
   }
-
-  const defaultRoom = new Room("0000", RoomType.CHAT, "wycode");
-  rooms.set(0, defaultRoom);
 }
 
 init();
 
 export function create(ctx: Context) {
-  const { type, password } = helpers.getQuery(ctx, { mergeParams: true });
+  const queries = helpers.getQuery(ctx, { mergeParams: true });
+  const type = Number.parseInt(queries.type);
   if (
-    !type || !(Object.values(RoomType) as string[]).includes(type.toString())
+    !type || type > RoomType.CHAT
   ) {
     ctx.throw(400, "type not valid");
   }
@@ -32,45 +30,50 @@ export function create(ctx: Context) {
   const websocket = ctx.upgrade();
 
   websocket.onopen = () => {
-    const user = new User(0, new Date(), websocket);
+    const user = new User(1, new Date(), websocket);
     const id =
       unusedId.splice(Math.floor(Math.random() * unusedId.length), 1)[0];
     const room = new Room(
       id.toString().padStart(4, "0"),
       type as RoomType,
-      password,
     );
     rooms.set(id, room);
-    room.join(user);
-
     room.send(new Message(MessageType.CREATED, room.id, new Date(), "system"));
+    room.join(user);
+    room.send(
+      new Message(
+        MessageType.JOIN,
+        lodash.pick(user, "id"),
+        new Date(),
+        "system",
+      ),
+    );
   };
 }
 
 // Join a room
 export function join(ctx: Context) {
-  const { id, type, password } = helpers.getQuery(ctx, { mergeParams: true });
+  const { id, type } = helpers.getQuery(ctx, { mergeParams: true });
   if (!id) ctx.throw(400, "id required");
+  const roomType = Number.parseInt(type);
   if (
-    !type || !(Object.values(RoomType) as string[]).includes(type.toString())
+    !roomType || roomType > RoomType.CHAT
   ) {
     ctx.throw(400, "type not valid");
   }
   const room = rooms.get(Number.parseInt(id));
-  if (!room || room.type !== type) ctx.throw(404, "room not found");
-  if (room.password !== password) ctx.throw(401, "password not valid");
+  if (!room || room.type !== roomType) ctx.throw(404, "room not found");
 
   if (!ctx.isUpgradable) ctx.throw(400, "websocket required");
   const websocket = ctx.upgrade();
 
   websocket.onopen = () => {
-    const user = new User(room.users.size, new Date(), websocket);
+    const user = new User(room.users.size + 1, new Date(), websocket);
     room.join(user);
-
     room.send(
       new Message(
         MessageType.JOIN,
-        { user: lodash.omit(user, "websocket") },
+        lodash.pick(user, "id"),
         new Date(),
         "system",
       ),

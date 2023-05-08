@@ -8,12 +8,9 @@ export class User {
     public id: number,
     public lastSeen: Date,
     public websocket: WebSocket,
-    public name?: string,
-    public avatar?: string,
-    public gender?: 0 | 1,
   ) {
     websocket.addEventListener("message", (e) => {
-      logger.info(`[ws] ${e.data}`);
+      logger.debug(`[ws] ${e.data}`);
       this.onMessage(JSON.parse(e.data));
     });
   }
@@ -21,14 +18,7 @@ export class User {
   onMessage(message: Message) {
     if (message.type === MessageType.PING) {
       this.lastSeen = new Date();
-      this.send(
-        new Message(
-          MessageType.PONG,
-          null,
-          new Date(),
-          "system",
-        ),
-      );
+      this.send(new Message(MessageType.PONG));
       return;
     }
     if (!this.room) return;
@@ -37,10 +27,10 @@ export class User {
 
   send(message: Message) {
     if (this.websocket.readyState !== WebSocket.OPEN) return;
-    if (
-      message.type === MessageType.JOIN || message.content.user.id === this.id
-    ) {
-      message.content.room = this.room;
+    if (message.type === MessageType.JOIN && message.content.id === this.id) {
+      this.room?.messages.forEach((msg) =>
+        this.websocket.send(JSON.stringify(msg))
+      );
     }
     this.websocket.send(JSON.stringify(message));
   }

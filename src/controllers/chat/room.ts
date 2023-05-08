@@ -8,7 +8,6 @@ export class Room {
   constructor(
     public id: string,
     public type: RoomType,
-    public password?: string,
   ) {}
 
   join(user: User) {
@@ -23,5 +22,5 @@ export class Room {
 }
 
 export enum RoomType {
-  CHAT = "chat",
+  CHAT = 1,
 }
