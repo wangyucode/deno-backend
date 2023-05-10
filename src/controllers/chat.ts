@@ -1,4 +1,5 @@
-import { helpers, lodash } from "../../deps.ts";
+import { helpers } from "../../deps.ts";
+import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
 import { Message, MessageType } from "./chat/message.ts";
 import { RoomType } from "./chat/room.ts";
@@ -38,16 +39,9 @@ export function create(ctx: Context) {
       type as RoomType,
     );
     rooms.set(id, room);
-    room.send(new Message(MessageType.CREATED, room.id, new Date(), "system"));
     room.join(user);
-    room.send(
-      new Message(
-        MessageType.JOIN,
-        lodash.pick(user, "id"),
-        new Date(),
-        "system",
-      ),
-    );
+    room.send(new Message(MessageType.CREATED, room.id, new Date(), "system"));
+    room.send(new Message(MessageType.JOIN, user.id, new Date(), "system"));
     user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
   };
 }
@@ -71,14 +65,10 @@ export function join(ctx: Context) {
   websocket.onopen = () => {
     const user = new User(room.users.size + 1, new Date(), websocket);
     room.join(user);
-    room.send(
-      new Message(
-        MessageType.JOIN,
-        lodash.pick(user, "id"),
-        new Date(),
-        "system",
-      ),
-    );
+    room.send(new Message(MessageType.JOIN, user.id, new Date(), "system"));
     user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
+    if (room.users.size % 5 === 0) {
+      sendEmail(`chat: ${room.id} has ${room.users.size} users`);
+    }
   };
 }

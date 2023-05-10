@@ -21,15 +21,23 @@ export class User {
       this.send(new Message(MessageType.PONG));
       return;
     }
-    if (!this.room) return;
-    logger.info(`[ws] ${message.type} ${message.content}`);
+    const room = this.room;
+    if (!room) return;
+    logger.info(`[ws] ${room.id} ${message.type} ${message.content}`);
     message.sender = this.id;
-    this.room.send(message);
+
+    if (message.type === MessageType.LEAVE) {
+      room.remove(this.id);
+      message.sender = "system";
+      message.content = this.id;
+      this.destroy();
+    }
+    room.send(message);
   }
 
   send(message: Message) {
     if (this.websocket.readyState !== WebSocket.OPEN) return;
-    if (message.type === MessageType.JOIN && message.content.id === this.id) {
+    if (message.type === MessageType.JOIN && message.content === this.id) {
       this.room?.messages.forEach((msg) =>
         this.websocket.send(JSON.stringify(msg))
       );

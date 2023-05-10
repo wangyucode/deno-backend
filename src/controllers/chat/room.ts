@@ -19,6 +19,10 @@ export class Room {
     this.users.forEach((user) => user.send(msg));
     this.messages.push(msg);
   }
+
+  remove(id: number) {
+    this.users.delete(id);
+  }
 }
 
 export enum RoomType {
