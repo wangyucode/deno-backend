@@ -4,7 +4,7 @@ export class Message {
     // deno-lint-ignore no-explicit-any
     public content?: any,
     public time?: Date,
-    public sender?: string,
+    public sender?: string | number,
   ) {}
 }
 
@@ -16,4 +16,5 @@ export enum MessageType {
   LEAVE = "leave",
   ERROR = "error",
   CREATED = "created",
+  WELCOME = "welcome",
 }

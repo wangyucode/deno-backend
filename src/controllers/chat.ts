@@ -48,6 +48,7 @@ export function create(ctx: Context) {
         "system",
       ),
     );
+    user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
   };
 }
 
@@ -78,5 +79,6 @@ export function join(ctx: Context) {
         "system",
       ),
     );
+    user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
   };
 }

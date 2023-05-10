@@ -22,6 +22,8 @@ export class User {
       return;
     }
     if (!this.room) return;
+    logger.info(`[ws] ${message.type} ${message.content}`);
+    message.sender = this.id;
     this.room.send(message);
   }
 
