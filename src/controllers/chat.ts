@@ -10,7 +10,7 @@ import { User } from "./chat/user.ts";
 const MAX_ROOMS = 10000;
 const rooms = new Map<number, Room>();
 const unusedId: number[] = [];
-const CLEAR_INTERVAL = 1000 * 60 * 1;
+const CLEAR_INTERVAL = 1000 * 60 * 5;
 
 function init(): void {
   for (let i = 0; i < MAX_ROOMS; i++) {
