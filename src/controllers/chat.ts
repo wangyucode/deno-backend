@@ -1,4 +1,5 @@
 import { helpers } from "../../deps.ts";
+import { logger } from "../logger.ts";
 import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
 import { Message, MessageType } from "./chat/message.ts";
@@ -9,14 +10,40 @@ import { User } from "./chat/user.ts";
 const MAX_ROOMS = 10000;
 const rooms = new Map<number, Room>();
 const unusedId: number[] = [];
+const CLEAR_INTERVAL = 1000 * 60 * 1;
 
 function init(): void {
   for (let i = 0; i < MAX_ROOMS; i++) {
     unusedId.push(i);
   }
+  setInterval(() => {
+    clear();
+  }, CLEAR_INTERVAL);
 }
 
 init();
+
+// clear all rooms
+export function clear() {
+  const now = new Date();
+  rooms.forEach((room) => {
+    room.users.forEach((user) => {
+      if (now.getTime() - user.lastSeen.getTime() > CLEAR_INTERVAL) {
+        logger.info(`[ws] [clear] ${room.id} ${user.id} offline`);
+        room.remove(user.id);
+        room.send(
+          new Message(MessageType.OFFLINE, user.id, new Date(), "system"),
+        );
+        user.destroy();
+      }
+    });
+    if (room.users.size === 0) {
+      logger.info(`[ws] [clear] remove ${room.id}`);
+      rooms.delete(Number.parseInt(room.id));
+      unusedId.push(Number.parseInt(room.id));
+    }
+  });
+}
 
 export function create(ctx: Context) {
   const queries = helpers.getQuery(ctx, { mergeParams: true });
@@ -43,6 +70,9 @@ export function create(ctx: Context) {
     room.send(new Message(MessageType.CREATED, room.id, new Date(), "system"));
     room.send(new Message(MessageType.JOIN, user.id, new Date(), "system"));
     user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
+    if (rooms.size % 100 === 0) {
+      sendEmail(`chat: ${rooms.size} rooms`);
+    }
   };
 }
 
@@ -70,6 +100,7 @@ export function join(ctx: Context) {
       new Date(),
       websocket,
     );
+    room.remove(reconnectUserId);
     room.join(user);
     room.send(
       new Message(

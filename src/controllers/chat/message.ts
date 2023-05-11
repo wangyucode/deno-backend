@@ -15,6 +15,7 @@ export enum MessageType {
   JOIN = "join",
   RECONNECT = "reconnect",
   LEAVE = "leave",
+  OFFLINE = "offline",
   ERROR = "error",
   CREATED = "created",
   WELCOME = "welcome",

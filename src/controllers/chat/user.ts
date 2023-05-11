@@ -32,6 +32,7 @@ export class User {
       message.content = this.id;
       this.destroy();
     }
+    if (!message.time) message.time = new Date();
     room.send(message);
   }
 
