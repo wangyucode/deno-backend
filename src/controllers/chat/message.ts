@@ -13,6 +13,7 @@ export enum MessageType {
   PING = "ping",
   PONG = "pong",
   JOIN = "join",
+  RECONNECT = "reconnect",
   LEAVE = "leave",
   ERROR = "error",
   CREATED = "created",

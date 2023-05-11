@@ -37,7 +37,11 @@ export class User {
 
   send(message: Message) {
     if (this.websocket.readyState !== WebSocket.OPEN) return;
-    if (message.type === MessageType.JOIN && message.content === this.id) {
+    if (
+      (message.type === MessageType.JOIN ||
+        message.type === MessageType.RECONNECT) &&
+      message.content === this.id
+    ) {
       this.room?.messages.forEach((msg) =>
         this.websocket.send(JSON.stringify(msg))
       );

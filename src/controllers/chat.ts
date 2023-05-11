@@ -48,24 +48,37 @@ export function create(ctx: Context) {
 
 // Join a room
 export function join(ctx: Context) {
-  const { id, type } = helpers.getQuery(ctx, { mergeParams: true });
-  if (!id) ctx.throw(400, "id required");
+  const { rid, type, uid } = helpers.getQuery(ctx, { mergeParams: true });
+  if (!rid) ctx.throw(400, "id required");
   const roomType = Number.parseInt(type);
   if (
     !roomType || roomType > RoomType.CHAT
   ) {
     ctx.throw(400, "type not valid");
   }
-  const room = rooms.get(Number.parseInt(id));
+  const room = rooms.get(Number.parseInt(rid));
   if (!room || room.type !== roomType) ctx.throw(404, "room not found");
 
   if (!ctx.isUpgradable) ctx.throw(400, "websocket required");
   const websocket = ctx.upgrade();
 
   websocket.onopen = () => {
-    const user = new User(room.users.size + 1, new Date(), websocket);
+    const reconnectUserId = Number.parseInt(uid);
+    const newUserId = room.maxUserId + 1;
+    const user = new User(
+      reconnectUserId ? reconnectUserId : newUserId,
+      new Date(),
+      websocket,
+    );
     room.join(user);
-    room.send(new Message(MessageType.JOIN, user.id, new Date(), "system"));
+    room.send(
+      new Message(
+        reconnectUserId ? MessageType.RECONNECT : MessageType.JOIN,
+        user.id,
+        new Date(),
+        "system",
+      ),
+    );
     user.send(new Message(MessageType.WELCOME, user.id, new Date(), "system"));
     if (room.users.size % 5 === 0) {
       sendEmail(`chat: ${room.id} has ${room.users.size} users`);

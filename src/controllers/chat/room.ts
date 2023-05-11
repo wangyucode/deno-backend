@@ -4,6 +4,7 @@ import { User } from "./user.ts";
 export class Room {
   users = new Map<number, User>();
   messages: Message[] = [];
+  maxUserId = 0;
 
   constructor(
     public id: string,
@@ -13,6 +14,7 @@ export class Room {
   join(user: User) {
     this.users.set(user.id, user);
     user.room = this;
+    if (user.id > this.maxUserId) this.maxUserId = user.id;
   }
 
   send(msg: Message) {
