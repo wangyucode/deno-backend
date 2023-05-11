@@ -13,7 +13,9 @@ export async function loggerMiddleware(
   await next();
   const ms = Date.now() - start;
   // ctx.response.headers.set("X-Response-Time", `${ms}ms`);
-  logger.info(`${ctx.request.method} ${ctx.request.url} - ${ms}ms`);
+  logger.info(
+    `${ctx.request.method} ${ctx.request.url} - ${ctx.response.status} ${ms}ms`,
+  );
 }
 
 export async function errorMiddleware(

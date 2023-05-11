@@ -8,6 +8,7 @@ import * as wechat from "./controllers/wechat.ts";
 import * as clipboard from "./controllers/clipboard.ts";
 import * as analysis from "./controllers/analysis.ts";
 import * as email from "./controllers/email.ts";
+import * as chat from "./controllers/chat.ts";
 import { userGuard } from "./middleware.ts";
 import { UserRole } from "./types.ts";
 
@@ -28,4 +29,6 @@ export const router = new Router()
   .get("/clipboard/openid/:openid", clipboard.getByOpenid)
   .post("/clipboard", clipboard.saveById)
   .get("/analysis/blogs", analysis.getBlogs)
-  .get("/analysis/dashboard", analysis.getDashboardUrl);
+  .get("/analysis/dashboard", analysis.getDashboardUrl)
+  .get("/ws/create", chat.create)
+  .get("/ws/join", chat.join);
