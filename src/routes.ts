@@ -9,7 +9,8 @@ import * as clipboard from "./controllers/clipboard.ts";
 import * as analysis from "./controllers/analysis.ts";
 import * as email from "./controllers/email.ts";
 import * as chat from "./controllers/chat.ts";
-import { userGuard } from "./middleware.ts";
+import * as vending from "./controllers/vending.ts";
+import { apiKeyGuard, userGuard } from "./middleware.ts";
 import { UserRole } from "./types.ts";
 
 export const router = new Router()
@@ -31,4 +32,6 @@ export const router = new Router()
   .get("/analysis/blogs", analysis.getBlogs)
   .get("/analysis/dashboard", analysis.getDashboardUrl)
   .get("/ws/create", chat.create)
-  .get("/ws/join", chat.join);
+  .get("/ws/join", chat.join)
+  .get("/vending/banner", apiKeyGuard, vending.getBanners)
+  .get("/vending/goods", apiKeyGuard, vending.getGoods);

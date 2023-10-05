@@ -13,6 +13,8 @@ export enum COLLECTIONS {
   CLIPBOARD = "clipboard",
   COMMENT = "comments",
   WECHAT_APP = "wechatApp",
+  VENDING_BANNER = "vendingBanner",
+  VENDING_GOODS = "vendingGoods",
 }
 
 export enum CONFIG_KEYS {
