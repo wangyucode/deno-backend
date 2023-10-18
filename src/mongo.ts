@@ -8,6 +8,7 @@ export let db: Database;
 let retry = 0;
 
 export enum COLLECTIONS {
+  USER="user",
   COMMENT_APP = "mongoCommentApp",
   CONFIG = "config",
   CLIPBOARD = "clipboard",
