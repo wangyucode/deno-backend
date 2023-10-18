@@ -8,6 +8,20 @@
       "request": "launch",
       "name": "test",
       "type": "node",
+      "program": "${workspaceFolder}/src/test.ts",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "run",
+        "--inspect-wait",
+        "--allow-all"
+      ],
+      "attachSimplePort": 9229
+    },
+    {
+      "request": "launch",
+      "name": "index",
+      "type": "node",
       "program": "${workspaceFolder}/src/index.ts",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "deno",

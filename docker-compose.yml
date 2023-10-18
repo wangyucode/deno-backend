@@ -32,6 +32,8 @@ services:
   #   image: wangyucode/deno-backend
   #   container_name: deno
   #   restart: unless-stopped
+  #   ports:
+  #     - 8083:8083
   #   environment:
   #     - TZ=Asia/Shanghai
   #   depends_on:

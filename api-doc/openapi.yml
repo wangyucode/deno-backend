@@ -5,7 +5,7 @@ info:
     This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
-  version: 2023.4.22
+  version: 2023.10.1
 servers:
   - url: http://localhost:8083/api/v1
   - url: https://wycode.cn/api/v1
@@ -14,7 +14,7 @@ tags:
   - name: comment
   - name: clipboard
   - name: analysis
-  - name: private
+  - name: vending
 paths:
   /:
     get:
@@ -220,7 +220,64 @@ paths:
               schema:
                 $ref: '#/components/schemas/CommonResult'
 
+  /vending/banner: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /vending/goods: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /vending/order: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+    post:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDetail'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header       # can be "header", "query" or "cookie"
+      name: X-API-Key
   schemas:
     State:
       type: object
@@ -290,3 +347,21 @@ components:
           type: string
         content:
           type: string
+    OrderDetail: 
+      type: object
+      properties:
+        description:
+          type: string
+        total: 
+          type: number
+        goods_detail:
+          type: array
+          items:
+            type: object
+            properties: 
+              merchant_goods_id:
+                type: string
+              quantity:
+                type: integer
+              unit_price:
+                type: integer

@@ -75,7 +75,7 @@ export async function getByWxCode(ctx: Context) {
         lastUpdate: now,
       };
       await cc.insertOne(result);
-      sendEmail("有新的用户注册了剪贴板服务", "剪贴板服务");
+      sendEmail("有新的用户注册了Clipboard服务", "剪贴板服务");
       ctx.response.body = getDataResult(result);
     }
   } else {

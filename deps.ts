@@ -28,3 +28,5 @@ export { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
 export * as Sts from "npm:@alicloud/sts20150401@1.1.3";
 export * as OpenApi from "npm:@alicloud/openapi-client@0.4.5";
 export * as Sls from "npm:@alicloud/sls20201230@2.0.0";
+import WxPay from "npm:wechatpay-node-v3@2.1.6";
+export { WxPay };

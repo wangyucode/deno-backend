@@ -1,5 +1,5 @@
 import { Status, STATUS_TEXT } from "../deps.ts";
-import { isProd } from "./env.ts";
+import { env, isProd } from "./env.ts";
 import { logger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
 import { AuthUser, Context, UserRole } from "./types.ts";
@@ -63,4 +63,13 @@ export function userGuard(...roles: UserRole[]) {
     }
     await next();
   };
+}
+
+export async function apiKeyGuard(
+  ctx: Context,
+  next: () => Promise<unknown>,
+): Promise<void> {
+  const apiKey = ctx.request.headers.get("X-API-Key");
+  if (apiKey !== env.VENDING_API_KEY) ctx.throw(401);
+  await next();
 }
