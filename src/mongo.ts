@@ -8,7 +8,7 @@ export let db: Database;
 let retry = 0;
 
 export enum COLLECTIONS {
-  USER="user",
+  USER = "user",
   COMMENT_APP = "mongoCommentApp",
   CONFIG = "config",
   CLIPBOARD = "clipboard",
@@ -16,6 +16,7 @@ export enum COLLECTIONS {
   WECHAT_APP = "wechatApp",
   VENDING_BANNER = "vendingBanner",
   VENDING_GOODS = "vendingGoods",
+  VENDING_ORDER = "vendingOrder",
 }
 
 export enum CONFIG_KEYS {

@@ -232,6 +232,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+  /vending/goods: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+  /vending/order: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+    post:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDetail'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -307,3 +347,21 @@ components:
           type: string
         content:
           type: string
+    OrderDetail: 
+      type: object
+      properties:
+        description:
+          type: string
+        total: 
+          type: number
+        goods_detail:
+          type: array
+          items:
+            type: object
+            properties: 
+              merchant_goods_id:
+                type: string
+              quantity:
+                type: integer
+              unit_price:
+                type: integer

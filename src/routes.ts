@@ -1,5 +1,4 @@
 import { Router } from "../deps.ts";
-
 import * as auth from "./controllers/auth.ts";
 import { state } from "./controllers/state.ts";
 import * as config from "./controllers/config.ts";
@@ -34,4 +33,6 @@ export const router = new Router()
   .get("/ws/create", chat.create)
   .get("/ws/join", chat.join)
   .get("/vending/banner", apiKeyGuard, vending.getBanners)
-  .get("/vending/goods", apiKeyGuard, vending.getGoods);
+  .get("/vending/goods", apiKeyGuard, vending.getGoods)
+  .post("/vending/order", apiKeyGuard, vending.createOrder)
+  .post("/vending/wx-notify", vending.notify);
