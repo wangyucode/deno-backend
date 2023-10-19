@@ -5,7 +5,7 @@ info:
     This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
-  version: 2023.10.1
+  version: 2023.10.19
 servers:
   - url: http://localhost:8083/api/v1
   - url: https://wycode.cn/api/v1
@@ -44,6 +44,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+  
+  /log:
+    post:
+      tags:
+        - basic
+      summary: post log
+      requestBody:
+        content:
+          text/plain:
+            schema: 
+              type: string
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
 
   /comment:
     get:
@@ -75,6 +92,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+    
     post:
       tags:
         - comment
@@ -232,6 +250,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+  
   /vending/goods: 
     get:
       tags: 
@@ -244,6 +263,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+  
   /vending/order: 
     get:
       tags: 
@@ -256,6 +276,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+    
     post:
       tags: 
         - vending
@@ -272,12 +293,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
 components:
+  
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header       # can be "header", "query" or "cookie"
       name: X-API-Key
+  
   schemas:
     State:
       type: object
@@ -301,6 +325,7 @@ components:
               paramNames:
                 type: array
                 description: method
+    
     CommonResult:
       type: object
       properties:
@@ -310,6 +335,7 @@ components:
           type: string
         payload:
           type: object
+    
     Comment:
       type: object
       properties:
@@ -329,6 +355,7 @@ components:
           type: object
         toId:
           type: string
+    
     Clipboard:
       type: object
       properties:
@@ -336,6 +363,7 @@ components:
           type: string
         content:
           type: string
+    
     Email:
       type: object
       properties:
@@ -347,6 +375,7 @@ components:
           type: string
         content:
           type: string
+    
     OrderDetail: 
       type: object
       properties:
