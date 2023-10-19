@@ -37,6 +37,7 @@ export async function getCode(ctx: Context) {
       $set: { usedTime: new Date() },
     });
     ctx.response.body = getDataResult(result);
+    sendEmail(`提货码 ${code} 被使用`);
   } else {
     ctx.response.body = getErrorResult("未找到");
   }
