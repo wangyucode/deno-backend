@@ -28,6 +28,20 @@ export async function getOrder(ctx: Context) {
   ctx.response.body = getDataResult(result);
 }
 
+export async function getCode(ctx: Context) {
+  const { code } = helpers.getQuery(ctx, { mergeParams: true });
+  const cc = db.collection(COLLECTIONS.VENDING_CODE);
+  const result = await cc.findOne({ code: code, usedTime: null });
+  if (result) {
+    await cc.updateOne({ _id: result._id }, {
+      $set: { usedTime: new Date() },
+    });
+    ctx.response.body = getDataResult(result);
+  } else {
+    ctx.response.body = getErrorResult("未找到");
+  }
+}
+
 export async function createOrder(ctx: Context) {
   const { description, total, goodsDetail } = await ctx.request.body().value;
   logger.info("createOrder:", description, total, goodsDetail.length);

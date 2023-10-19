@@ -38,4 +38,5 @@ export const router = new Router()
   .get("/vending/goods", apiKeyGuard, vending.getGoods)
   .post("/vending/order", apiKeyGuard, vending.createOrder)
   .get("/vending/order", apiKeyGuard, vending.getOrder)
+  .get("/vending/code", apiKeyGuard, vending.getCode)
   .post("/vending/wx-notify", vending.notify);

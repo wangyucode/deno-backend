@@ -17,6 +17,7 @@ export enum COLLECTIONS {
   VENDING_BANNER = "vendingBanner",
   VENDING_GOODS = "vendingGoods",
   VENDING_ORDER = "vendingOrder",
+  VENDING_CODE = "vendingCode",
 }
 
 export enum CONFIG_KEYS {

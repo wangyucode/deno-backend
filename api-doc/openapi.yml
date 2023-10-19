@@ -5,7 +5,7 @@ info:
     This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
-  version: 2023.10.19
+  version: 2023.10.20
 servers:
   - url: http://localhost:8083/api/v1
   - url: https://wycode.cn/api/v1
@@ -270,6 +270,12 @@ paths:
         - vending
       security:
         - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -287,6 +293,25 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OrderDetail'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+
+  /vending/code: 
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
