@@ -383,14 +383,12 @@ components:
           type: string
         total: 
           type: number
-        goods_detail:
+        goodsDetail:
           type: array
           items:
             type: object
             properties: 
-              merchant_goods_id:
+              id:
                 type: string
-              quantity:
-                type: integer
-              unit_price:
+              count:
                 type: integer

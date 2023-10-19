@@ -5,6 +5,7 @@ README.md
 .github/
 .vscode/
 .hooks/
-.env
+api-doc/
+nginx/
 Dockerfile
 docker-compose.yml
