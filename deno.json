@@ -2,7 +2,7 @@
   "tasks": {
     "start": "deno run --allow-all src/index.ts",
     "test": "deno run --allow-all src/test.ts",
-    "check": "deno fmt & deno lint",
+    "check": "deno cache deps.ts & deno cache src/index.ts & deno fmt & deno lint",
     "hook-install": "deno run --allow-read --allow-write --allow-run https://deno.land/x/deno_hooks@0.1.1/mod.ts install"
   }
 }

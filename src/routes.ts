@@ -11,6 +11,7 @@ import * as chat from "./controllers/chat.ts";
 import * as vending from "./controllers/vending.ts";
 import { apiKeyGuard, userGuard } from "./middleware.ts";
 import { UserRole } from "./types.ts";
+import { postLog } from "./logger.ts";
 
 export const router = new Router()
   .prefix("/api/v1")
@@ -19,6 +20,7 @@ export const router = new Router()
   .get("/config", config.getConfig)
   .post("/config", userGuard(UserRole.ADMIN), config.setConfig)
   .delete("/config/:id", userGuard(UserRole.ADMIN), config.deleteConfig)
+  .post("/log", postLog)
   .post("/email", email.send)
   .post("/comment", comments.postComment)
   .get("/comment", comments.getComments)
@@ -35,4 +37,5 @@ export const router = new Router()
   .get("/vending/banner", apiKeyGuard, vending.getBanners)
   .get("/vending/goods", apiKeyGuard, vending.getGoods)
   .post("/vending/order", apiKeyGuard, vending.createOrder)
+  .get("/vending/order", apiKeyGuard, vending.getOrder)
   .post("/vending/wx-notify", vending.notify);

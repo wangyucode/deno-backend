@@ -1,4 +1,4 @@
-import { format, log } from "../deps.ts";
+import { Context, format, log } from "../deps.ts";
 import { isProd } from "./env.ts";
 
 export let logger: log.Logger;
@@ -29,4 +29,10 @@ export async function setupLogger(): Promise<void> {
   await log.setup(config);
 
   logger = log.getLogger(isProd() ? "PRODUCT" : "DEVELOPMENT");
+}
+
+export async function postLog(ctx: Context) {
+  const message = await ctx.request.body().value;
+  logger.info(message);
+  ctx.response.body = message;
 }

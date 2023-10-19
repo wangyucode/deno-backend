@@ -6,7 +6,7 @@ export {
   Status,
   STATUS_TEXT,
 } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-export { load } from "https://deno.land/std@0.178.0/dotenv/mod.ts";
+export { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
 export {
   Database,
   MongoClient,

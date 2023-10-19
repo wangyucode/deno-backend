@@ -3,18 +3,9 @@ import { COLLECTIONS, db } from "../mongo.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
 import { logger } from "../logger.ts";
-import { env, loadEnv } from "../env.ts";
+import { env } from "../env.ts";
 
-await loadEnv();
-const { cert, key } = JSON.parse(env.VENDING_WX_API_CLINET_CERT);
-
-const pay = new WxPay({
-  appid: env.VENDING_APP_ID,
-  mchid: env.VENDING_MCH_ID,
-  publicKey: cert,
-  privateKey: key,
-  key: env.VENDING_WX_APIV3_KEY,
-});
+let wxPay: WxPay;
 
 export async function getBanners(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_BANNER);
@@ -27,6 +18,13 @@ export async function getGoods(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const result = await cc.find({ type }).toArray();
   ctx.response.body = result ? getDataResult(result) : getErrorResult("未找到");
+}
+
+export async function getOrder(ctx: Context) {
+  const { id } = helpers.getQuery(ctx, { mergeParams: true });
+  const cc = db.collection(COLLECTIONS.VENDING_ORDER);
+  const result = await cc.findOne({ out_trade_no: id });
+  ctx.response.body = getDataResult(result);
 }
 
 export async function createOrder(ctx: Context) {
@@ -48,6 +46,7 @@ export async function createOrder(ctx: Context) {
   const nonce_str = Math.random().toString(36).substring(2, 15), // 随机字符串
     timestamp = parseInt(+new Date() / 1000 + "").toString(), // 时间戳 秒
     url = "/v3/pay/transactions/native";
+  const pay = getWxPay();
   const signature = pay.getSignature("POST", nonce_str, timestamp, url, params);
   const authorization = pay.getAuthorization(nonce_str, timestamp, signature);
   const res = await fetch(
@@ -71,7 +70,12 @@ export async function createOrder(ctx: Context) {
 
 export async function notify(ctx: Context) {
   const body = await ctx.request.body().value;
-  logger.info("wx notification", JSON.stringify(body));
+  logger.info(
+    "wx notification",
+    JSON.stringify(body),
+    JSON.stringify(ctx.request.headers),
+  );
+  const pay = getWxPay();
   const params = {
     body,
     signature: ctx.request.headers.get("wechatpay-signature") || "",
@@ -97,4 +101,34 @@ export async function notify(ctx: Context) {
   }
 
   ctx.response.body = "ok";
+}
+
+export function getWxPay() {
+  if (!wxPay) {
+    const { cert, key } = JSON.parse(env.VENDING_WX_API_CLINET_CERT);
+
+    wxPay = new WxPay({
+      appid: env.VENDING_APP_ID,
+      mchid: env.VENDING_MCH_ID,
+      publicKey: cert,
+      privateKey: key,
+      key: env.VENDING_WX_APIV3_KEY,
+    });
+
+    wxPay["getRequest"] = async (url, authorization) => {
+      const res = await fetch(url, {
+        headers: {
+          "Accept": "application/json",
+          "Authorization": authorization,
+          "Accept-Language": "zh-CN",
+        },
+      });
+      const data = await res.json();
+      logger.info(JSON.stringify(data));
+      data.status = res.status;
+      return data;
+    };
+  }
+
+  return wxPay;
 }

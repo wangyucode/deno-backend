@@ -5,6 +5,7 @@ import { Application, format, oakCors } from "../deps.ts";
 import { env, isProd, loadEnv } from "./env.ts";
 import { logger, setupLogger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
+import { afterServerStart } from "./setup.ts";
 
 function startHttpServer() {
   const app = new Application();
@@ -21,6 +22,7 @@ loadEnv()
   .then(setupLogger)
   .then(connectToMongo)
   .then(startHttpServer)
+  .then(afterServerStart)
   .then(() => {
     logger.info(`server listening on ${env.PORT}`);
     if (isProd()) {
