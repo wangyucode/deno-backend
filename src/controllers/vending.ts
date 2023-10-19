@@ -24,7 +24,7 @@ export async function getGoods(ctx: Context) {
 export async function getOrder(ctx: Context) {
   const { id } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_ORDER);
-  const result = await cc.findOne({ _id: id });
+  const result = await cc.findOne({ _id: new ObjectId(id) });
   ctx.response.body = getDataResult(result);
 }
 
@@ -110,7 +110,9 @@ export async function notify(ctx: Context) {
     if (!result) ctx.throw(403, "解密失败");
 
     const cc = db.collection(COLLECTIONS.VENDING_ORDER);
-    await cc.updateOne({ _id: new ObjectId(result.out_trade_no) }, result);
+    await cc.updateOne({ _id: new ObjectId(result.out_trade_no) }, {
+      $set: result,
+    });
     sendEmail(`订单支付成功：\n${resultString}`);
   }
 
