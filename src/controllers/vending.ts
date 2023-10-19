@@ -114,7 +114,7 @@ export async function notify(ctx: Context) {
     sendEmail(`订单支付成功：\n${resultString}`);
   }
 
-  ctx.response.body = 'ok';
+  ctx.response.body = "ok";
 }
 
 export function getWxPay() {
