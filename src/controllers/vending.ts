@@ -110,7 +110,9 @@ export async function notify(ctx: Context) {
     if (!result) ctx.throw(403, "解密失败");
 
     const cc = db.collection(COLLECTIONS.VENDING_ORDER);
-    await cc.updateOne({ _id: new ObjectId(result.out_trade_no) }, {$set: result});
+    await cc.updateOne({ _id: new ObjectId(result.out_trade_no) }, {
+      $set: result,
+    });
     sendEmail(`订单支付成功：\n${resultString}`);
   }
 
