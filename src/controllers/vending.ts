@@ -21,7 +21,9 @@ export async function getBanners(ctx: Context) {
 export async function getGoods(ctx: Context) {
   const { type } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
-  const result = await cc.find({ type }).toArray();
+  const result = await cc.find({ type, stock: { $gt: 0 } }, {
+    sort: { track: 1 },
+  }).toArray();
   ctx.response.body = result ? getDataResult(result) : getErrorResult("未找到");
 }
 
@@ -50,13 +52,22 @@ export async function getCode(ctx: Context) {
 }
 
 export async function reduce(ctx: Context) {
-  const { track } = helpers.getQuery(ctx, { mergeParams: true });
+  const query = helpers.getQuery(ctx, { mergeParams: true });
+  const track = Number.parseInt(query.track);
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
-  const result = await cc.updateOne({ track }, { $inc: { stock: 1 } });
+  const result = await cc.updateOne({ track }, { $inc: { stock: -1 } });
   ctx.response.body = getDataResult(result);
 }
 
 export async function heartbeat(ctx: Context) {
+  clearTimeout(heartbeatTimeoutId);
+  heartbeatTimeoutId = setTimeout(
+    () => sendEmail("客户端掉线"),
+    HEARTBEAT_TIMEOUT,
+  );
+
+  const result = await getConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT);
+
   const now = new Date().getTime();
   if (now - lastHeartbeat < HEARTBEAT_TIMEOUT) {
     await setConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT, {
@@ -64,15 +75,8 @@ export async function heartbeat(ctx: Context) {
       updateBanner: false,
     });
   }
-
-  clearTimeout(heartbeatTimeoutId);
-  heartbeatTimeoutId = setTimeout(
-    () => sendEmail("客户端掉线"),
-    HEARTBEAT_TIMEOUT,
-  );
-
   lastHeartbeat = now;
-  const result = await getConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT);
+
   ctx.response.body = getDataResult(result);
 }
 
