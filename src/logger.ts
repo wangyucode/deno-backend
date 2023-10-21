@@ -1,5 +1,6 @@
 import { Context, format, log } from "../deps.ts";
 import { isProd } from "./env.ts";
+import { sendEmail } from "./notifier.ts";
 
 export let logger: log.Logger;
 export async function setupLogger(): Promise<void> {
@@ -32,7 +33,13 @@ export async function setupLogger(): Promise<void> {
 }
 
 export async function postLog(ctx: Context) {
-  const message = await ctx.request.body().value;
-  logger.info(message);
-  ctx.response.body = message;
+  const { message, type } = await ctx.request.body().value;
+  if (type === "ERROR") {
+    sendEmail(`客户端错误:\n${message}`);
+    logger.error(message);
+  } else {
+    logger.info(message);
+  }
+
+  ctx.response.status = 200;
 }

@@ -1,12 +1,16 @@
 import { helpers, ObjectId, WxPay } from "../../deps.ts";
-import { COLLECTIONS, db } from "../mongo.ts";
+import { COLLECTIONS, CONFIG_KEYS, db } from "../mongo.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
 import { logger } from "../logger.ts";
 import { env } from "../env.ts";
 import { sendEmail } from "../notifier.ts";
+import { getConfigInternal, setConfigInternal } from "./config.ts";
 
 let wxPay: WxPay;
+let lastHeartbeat = 0;
+let heartbeatTimeoutId = 0;
+const HEARTBEAT_TIMEOUT = 10 * 60 * 1000;
 
 export async function getBanners(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_BANNER);
@@ -31,16 +35,45 @@ export async function getOrder(ctx: Context) {
 export async function getCode(ctx: Context) {
   const { code } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_CODE);
-  const result = await cc.findOne({ code: code, usedTime: null });
+  const result = await cc.findOne({ code: code });
   if (result) {
-    await cc.updateOne({ _id: result._id }, {
-      $set: { usedTime: new Date() },
-    });
+    if (!result.usedTime) {
+      await cc.updateOne({ _id: result._id }, {
+        $set: { usedTime: new Date() },
+      });
+      sendEmail(`提货码 ${code} 被使用`);
+    }
     ctx.response.body = getDataResult(result);
-    sendEmail(`提货码 ${code} 被使用`);
   } else {
     ctx.response.body = getErrorResult("未找到");
   }
+}
+
+export async function reduce(ctx: Context) {
+  const { track } = helpers.getQuery(ctx, { mergeParams: true });
+  const cc = db.collection(COLLECTIONS.VENDING_GOODS);
+  const result = await cc.updateOne({ track }, { $inc: { stock: 1 } });
+  ctx.response.body = getDataResult(result);
+}
+
+export async function heartbeat(ctx: Context) {
+  const now = new Date().getTime();
+  if (now - lastHeartbeat < HEARTBEAT_TIMEOUT) {
+    await setConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT, {
+      updateGoods: false,
+      updateBanner: false,
+    });
+  }
+
+  clearTimeout(heartbeatTimeoutId);
+  heartbeatTimeoutId = setTimeout(
+    () => sendEmail("客户端掉线"),
+    HEARTBEAT_TIMEOUT,
+  );
+
+  lastHeartbeat = now;
+  const result = await getConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT);
+  ctx.response.body = getDataResult(result);
 }
 
 export async function createOrder(ctx: Context) {
@@ -91,6 +124,7 @@ export async function createOrder(ctx: Context) {
     ctx.response.body = getDataResult(data);
   } else {
     ctx.response.body = getErrorResult(data);
+    sendEmail(`下单失败:\n${JSON.stringify(data)}`);
   }
 }
 
