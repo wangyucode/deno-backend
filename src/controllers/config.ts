@@ -4,7 +4,7 @@ import { Context } from "../types.ts";
 import { getDataResult } from "../utils.ts";
 
 export async function setConfig(ctx: Context) {
-  const {key, value} = await ctx.request.body().value;
+  const { key, value } = await ctx.request.body().value;
   if (!key) ctx.throw(400, "key required");
   if (!value) ctx.throw(400, "value required");
   setConfigInternal(key, value);
@@ -37,5 +37,5 @@ export async function setConfigInternal<T>(key: string, value: T) {
 }
 
 export async function getConfigInternal(key: string) {
-  return await db.collection(COLLECTIONS.CONFIG).findOne({ _id: key })
+  return await db.collection(COLLECTIONS.CONFIG).findOne({ _id: key });
 }
