@@ -25,7 +25,7 @@ export async function getWechatSession(
 
 export async function getWechatApps(ctx: Context) {
   const appid = ctx.request.headers.get("referer")?.match(
-    /^https:\/\/servicewechat.com\/(\w+)\/.*$/,
+    /^https:\/\/servicewechat.com\/+(\w+)\/.*$/,
   )?.[1];
   if (!appid) {
     logger.error(

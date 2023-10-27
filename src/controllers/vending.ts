@@ -1,16 +1,16 @@
 import { helpers, ObjectId, WxPay } from "../../deps.ts";
-import { COLLECTIONS, CONFIG_KEYS, db } from "../mongo.ts";
+import { COLLECTIONS, db } from "../mongo.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
 import { logger } from "../logger.ts";
 import { env } from "../env.ts";
 import { sendEmail } from "../notifier.ts";
-import { getConfigInternal, setConfigInternal } from "./config.ts";
 
 let wxPay: WxPay;
 let lastHeartbeat = 0;
 let heartbeatTimeoutId = 0;
 const HEARTBEAT_TIMEOUT = 10 * 60 * 1000;
+let heartbeatContent: Record<string, boolean> = {};
 
 export async function getBanners(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_BANNER);
@@ -21,34 +21,68 @@ export async function getBanners(ctx: Context) {
 export async function getGoods(ctx: Context) {
   const { type } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
-  const result = await cc.find({ type, stock: { $gt: 0 } }, {
+  const result = await cc.find({ type }, {
     sort: { track: 1 },
   }).toArray();
   ctx.response.body = result ? getDataResult(result) : getErrorResult("未找到");
 }
 
+export async function putGoods(ctx: Context) {
+  const track = Number.parseInt(ctx?.params?.track as string);
+  const data = await ctx.request.body().value;
+  if (isNaN(track) || !data.track) ctx.throw(400, "track required");
+
+  data.mainImg =
+    `https://wycode.cn/upload/image/vending/goods/${track}/main.webp`;
+  data.images = [];
+  for (let index = 1; index <= data.imageCount; index++) {
+    data.images.push(
+      `https://wycode.cn/upload/image/vending/goods/${track}/${index}.webp`,
+    );
+  }
+  data.imageCount = undefined;
+  const cc = db.collection(COLLECTIONS.VENDING_GOODS);
+  const res = await cc.updateOne({ track }, { $set: data }, { upsert: true });
+  ctx.response.body = getDataResult(res);
+}
+
 export async function getOrder(ctx: Context) {
   const { id } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_ORDER);
-  const result = await cc.findOne({ _id: new ObjectId(id) });
+  const result = id
+    ? await cc.findOne({ _id: new ObjectId(id) })
+    : await cc.find().toArray();
   ctx.response.body = getDataResult(result);
 }
 
 export async function getCode(ctx: Context) {
   const { code } = helpers.getQuery(ctx, { mergeParams: true });
   const cc = db.collection(COLLECTIONS.VENDING_CODE);
-  const result = await cc.findOne({ code: code });
-  if (result) {
-    if (!result.usedTime) {
-      await cc.updateOne({ _id: result._id }, {
-        $set: { usedTime: new Date() },
-      });
-      sendEmail(`提货码 ${code} 被使用`);
-    }
+  if (!code) {
+    const result = await cc.find({ usedTime: { $exists: false } }).toArray();
     ctx.response.body = getDataResult(result);
   } else {
-    ctx.response.body = getErrorResult("未找到");
+    const result = await cc.findOne({ code });
+    if (result) {
+      if (!result.usedTime) {
+        await cc.updateOne({ _id: result._id }, {
+          $set: { usedTime: new Date() },
+        });
+        sendEmail(`提货码 ${code} 被使用`);
+      }
+      ctx.response.body = getDataResult(result);
+    } else {
+      ctx.response.body = getErrorResult("未找到");
+    }
   }
+}
+
+export async function postCode(ctx: Context) {
+  const data = await ctx.request.body().value;
+  if (!data.code || !data.goods || !data.goods.length) ctx.throw(400);
+  const cc = db.collection(COLLECTIONS.VENDING_CODE);
+
+  ctx.response.body = getDataResult(await cc.insertOne(data));
 }
 
 export async function reduce(ctx: Context) {
@@ -59,25 +93,25 @@ export async function reduce(ctx: Context) {
   ctx.response.body = getDataResult(result);
 }
 
-export async function heartbeat(ctx: Context) {
+export function heartbeat(ctx: Context) {
   clearTimeout(heartbeatTimeoutId);
   heartbeatTimeoutId = setTimeout(
     () => sendEmail("客户端掉线"),
     HEARTBEAT_TIMEOUT,
   );
 
-  const result = await getConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT);
-
   const now = new Date().getTime();
+  ctx.response.body = getDataResult(heartbeatContent);
   if (now - lastHeartbeat < HEARTBEAT_TIMEOUT) {
-    await setConfigInternal(CONFIG_KEYS.CONFIG_VENDING_HEARTBEAT, {
-      updateGoods: false,
-      updateBanner: false,
-    });
+    heartbeatContent = {};
   }
   lastHeartbeat = now;
+}
 
-  ctx.response.body = getDataResult(result);
+export function putHeartbeat(ctx: Context) {
+  const { field } = helpers.getQuery(ctx, { mergeParams: true });
+  heartbeatContent[field] = true;
+  ctx.response.body = getDataResult("ok");
 }
 
 export async function createOrder(ctx: Context) {

@@ -5,7 +5,7 @@ info:
     This is wycode.cn 's API doc based on the OpenAPI 3.0 specification.  You can find out more at [github](https://github.com/wangyucode/deno-backend).
   contact:
     email: wangyu@wycode.cn
-  version: 2023.10.22
+  version: 2023.10.28
 servers:
   - url: http://localhost:8083/api/v1
   - url: https://wycode.cn/api/v1
@@ -263,7 +263,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
-  
+
+    put:
+      tags:
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+    
   /vending/order: 
     get:
       tags: 
@@ -273,7 +290,6 @@ paths:
       parameters:
         - name: id
           in: query
-          required: true
           schema:
             type: string
       responses:
@@ -309,9 +325,25 @@ paths:
       parameters:
         - name: code
           in: query
-          required: true
           schema:
             type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+
+    post:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         '200':
           content:
@@ -337,6 +369,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CommonResult'
+
+  /vending/heartbeat:
+    get:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult'
+
+    put:
+      tags: 
+        - vending
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: field
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
   
