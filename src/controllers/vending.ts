@@ -28,9 +28,9 @@ export async function getGoods(ctx: Context) {
 }
 
 export async function putGoods(ctx: Context) {
-  const track = Number.parseInt(ctx?.params?.track as string);
   const data = await ctx.request.body().value;
-  if (isNaN(track) || !data.track) ctx.throw(400, "track required");
+  const track = data.track;
+  if (!track) ctx.throw(400, "track required");
 
   data.mainImg =
     `https://wycode.cn/upload/image/vending/goods/${track}/main.webp`;

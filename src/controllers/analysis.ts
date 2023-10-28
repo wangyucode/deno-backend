@@ -82,6 +82,6 @@ export async function getDashboardUrl(ctx: Context) {
   }
 
   const dashboardUrl =
-    `https://sls.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535?isShare=true&hideTopbar=true&hideSidebar=true&ignoreTabLocalStorage=true&hiddenModeSwitch=true${res.body.ticket}`;
+    `https://sls.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535?isShare=true&hideTopbar=true&hideSidebar=true&ignoreTabLocalStorage=true&hiddenModeSwitch=true&sls_ticket=${res.body.ticket}`;
   ctx.response.body = getDataResult(dashboardUrl);
 }
