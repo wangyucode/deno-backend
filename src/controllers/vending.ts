@@ -9,7 +9,7 @@ import { sendEmail } from "../notifier.ts";
 let wxPay: WxPay;
 let lastHeartbeat = 0;
 let heartbeatTimeoutId = 0;
-const HEARTBEAT_TIMEOUT = 10 * 60 * 1000;
+const HEARTBEAT_TIMEOUT = 120 * 1000;
 let heartbeatContent: Record<string, boolean> = {};
 
 export async function getBanners(ctx: Context) {
@@ -43,6 +43,7 @@ export async function putGoods(ctx: Context) {
   data.imageCount = undefined;
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const res = await cc.updateOne({ track }, { $set: data }, { upsert: true });
+  heartbeatContent.updateGoods = true;
   ctx.response.body = getDataResult(res);
 }
 
