@@ -43,6 +43,7 @@ export async function putGoods(ctx: Context) {
   data.imageCount = undefined;
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const res = await cc.updateOne({ track }, { $set: data }, { upsert: true });
+  heartbeatContent.updateGoods = true;
   ctx.response.body = getDataResult(res);
 }
 
