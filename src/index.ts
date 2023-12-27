@@ -8,14 +8,12 @@ import { sendEmail } from "./notifier.ts";
 import { afterServerStart } from "./setup.ts";
 
 function startHttpServer() {
-  const app = new Application();
-  app.use(oakCors());
-  app.use(middleware.errorMiddleware);
-  app.use(middleware.loggerMiddleware);
-  app.use(router.routes());
-  app.use(router.allowedMethods());
-
-  app.listen({ port: Number.parseInt(env.PORT) });
+  new Application()
+    .use(oakCors())
+    .use(middleware.errorMiddleware)
+    .use(router.routes())
+    .use(router.allowedMethods())
+    .listen({ port: Number.parseInt(env.PORT) });
 }
 
 loadEnv()

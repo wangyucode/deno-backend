@@ -3,7 +3,11 @@
   "packages": {
     "specifiers": {
       "npm:@alicloud/openapi-client@0.4.6": "npm:@alicloud/openapi-client@0.4.6",
+      "npm:@alicloud/openapi-util": "npm:@alicloud/openapi-util@0.3.2",
       "npm:@alicloud/sls20201230@3.1.0": "npm:@alicloud/sls20201230@3.1.0",
+      "npm:@alicloud/sts-sdk": "npm:@alicloud/sts-sdk@1.0.2",
+      "npm:@alicloud/sts20150401@1.1.4": "npm:@alicloud/sts20150401@1.1.4",
+      "npm:@alicloud/tea-util": "npm:@alicloud/tea-util@1.4.7",
       "npm:wechatpay-node-v3@2.1.6": "npm:wechatpay-node-v3@2.1.6"
     },
     "npm": {
@@ -48,6 +52,13 @@
           "@alicloud/tea-typescript": "@alicloud/tea-typescript@1.8.0"
         }
       },
+      "@alicloud/endpoint-util@0.0.1": {
+        "integrity": "sha512-+pH7/KEXup84cHzIL6UJAaPqETvln4yXlD9JzlrqioyCSaWxbug5FUobsiI6fuUOpw5WwoB3fWAtGbFnJ1K3Yg==",
+        "dependencies": {
+          "@alicloud/tea-typescript": "@alicloud/tea-typescript@1.8.0",
+          "kitx": "kitx@2.1.0"
+        }
+      },
       "@alicloud/gateway-sls@0.0.5": {
         "integrity": "sha512-6WoRNex9laknHyHvlLj5m7N04iD6to9waV7vpBc9ss73nks1U3P5PhCdzQHgSPjbc5ODrHUfY70gShxrGY6n0g==",
         "dependencies": {
@@ -68,6 +79,12 @@
         "dependencies": {
           "@alicloud/credentials": "@alicloud/credentials@2.3.0",
           "@alicloud/tea-typescript": "@alicloud/tea-typescript@1.8.0"
+        }
+      },
+      "@alicloud/http-core-sdk@1.0.0": {
+        "integrity": "sha512-ZODX85jwCf63Fmzj+pYZq85z8+SZzNg/FL+oW1/L/sRM8oj70+1+pdG0RHynAxBXkjNYt4eLIPrBvIEeVfx+LQ==",
+        "dependencies": {
+          "httpx": "httpx@2.3.0"
         }
       },
       "@alicloud/openapi-client@0.4.6": {
@@ -104,6 +121,23 @@
         "dependencies": {
           "@alicloud/gateway-sls": "@alicloud/gateway-sls@0.0.5",
           "@alicloud/gateway-spi": "@alicloud/gateway-spi@0.0.8",
+          "@alicloud/openapi-client": "@alicloud/openapi-client@0.4.6",
+          "@alicloud/openapi-util": "@alicloud/openapi-util@0.3.2",
+          "@alicloud/tea-typescript": "@alicloud/tea-typescript@1.8.0",
+          "@alicloud/tea-util": "@alicloud/tea-util@1.4.7"
+        }
+      },
+      "@alicloud/sts-sdk@1.0.2": {
+        "integrity": "sha512-WOv1qkNW7r2S6I0f2Qz8+7D5uU7bgE5vHxDWExcXmomMgr2i8JM6GhJeFPNVOzSWPgQi6Ujc+EATZ6ies9+UMA==",
+        "dependencies": {
+          "@alicloud/http-core-sdk": "@alicloud/http-core-sdk@1.0.0",
+          "uuid": "uuid@3.4.0"
+        }
+      },
+      "@alicloud/sts20150401@1.1.4": {
+        "integrity": "sha512-YWkrV7286P20bB3tjlyHO8Z23qhpr2MYRE1N2ZsoOHEhpV56oIWNcrBsqT4pW9/porq49oDNtkULM1WUn3J+YA==",
+        "dependencies": {
+          "@alicloud/endpoint-util": "@alicloud/endpoint-util@0.0.1",
           "@alicloud/openapi-client": "@alicloud/openapi-client@0.4.6",
           "@alicloud/openapi-util": "@alicloud/openapi-util@0.3.2",
           "@alicloud/tea-typescript": "@alicloud/tea-typescript@1.8.0",
@@ -399,6 +433,10 @@
       },
       "undici-types@5.26.5": {
         "integrity": "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==",
+        "dependencies": {}
+      },
+      "uuid@3.4.0": {
+        "integrity": "sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==",
         "dependencies": {}
       },
       "wechatpay-node-v3@2.1.6": {
