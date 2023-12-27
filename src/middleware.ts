@@ -5,19 +5,6 @@ import { sendEmail } from "./notifier.ts";
 import { AuthUser, Context, UserRole } from "./types.ts";
 import { getErrorResult, getJwtPayload } from "./utils.ts";
 
-export async function loggerMiddleware(
-  ctx: Context,
-  next: () => Promise<unknown>,
-): Promise<void> {
-  const start = Date.now();
-  await next();
-  const ms = Date.now() - start;
-  // ctx.response.headers.set("X-Response-Time", `${ms}ms`);
-  logger.info(
-    `${ctx.request.method} ${ctx.request.url} - ${ctx.response.status} ${ms}ms`,
-  );
-}
-
 export async function errorMiddleware(
   ctx: Context,
   next: () => Promise<unknown>,
