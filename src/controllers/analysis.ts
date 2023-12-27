@@ -92,7 +92,7 @@ export async function getDashboardUrl(ctx: Context) {
   // sign in
   try {
     signInRes = await (await fetch(
-      "http://signin.aliyun.com/federation?Action=GetSigninToken" +
+      "https://signin.aliyun.com/federation?Action=GetSigninToken" +
         "&AccessKeyId=" +
         encodeURIComponent(res.body.credentials.accessKeyId ?? "") +
         "&AccessKeySecret=" +
@@ -109,7 +109,7 @@ export async function getDashboardUrl(ctx: Context) {
     return;
   }
 
-  const dashboardUrl = "http://signin.aliyun.com/federation?Action=Login" +
+  const dashboardUrl = "https://signin.aliyun.com/federation?Action=Login" +
     "&LoginUrl=" +
     encodeURIComponent(
       "https://sls.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535",
