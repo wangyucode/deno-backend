@@ -52,7 +52,7 @@ export async function getOrder(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_ORDER);
   const result = id
     ? await cc.findOne({ _id: new ObjectId(id) })
-    : await cc.find().toArray();
+    : await cc.find({}, { sort: { createDate: -1 } }).toArray();
   ctx.response.body = getDataResult(result);
 }
 
@@ -92,6 +92,7 @@ export async function reduce(ctx: Context) {
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const result = await cc.updateOne({ track }, { $inc: { stock: -1 } });
   ctx.response.body = getDataResult(result);
+  sendEmail(`出货: ${track}, result: ${JSON.stringify(result)}`);
 }
 
 export function heartbeat(ctx: Context) {
@@ -161,6 +162,7 @@ export async function createOrder(ctx: Context) {
       goodsDetail,
     });
     ctx.response.body = getDataResult(data);
+    sendEmail(`下单成功:\n${JSON.stringify(data)}`);
   } else {
     ctx.response.body = getErrorResult(data);
     sendEmail(`下单失败:\n${JSON.stringify(data)}`);

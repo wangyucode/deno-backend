@@ -392,6 +392,7 @@ paths:
         - name: field
           in: query
           required: true
+          description: 'updateGoods, updateBanner, updateWeb'
           schema:
             type: string
       responses:

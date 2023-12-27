@@ -1,4 +1,11 @@
-import { $Sls20201230, OpenApi, Sls20201230 } from "../../deps.ts";
+import {
+  $OpenApi,
+  $Sls20201230,
+  $Sts20150401,
+  OpenApi,
+  Sls20201230,
+  Sts20150401,
+} from "../../deps.ts";
 import { env } from "../env.ts";
 import { logger } from "../logger.ts";
 import { Context } from "../types.ts";
@@ -58,30 +65,60 @@ export async function getBlogs(ctx: Context) {
 }
 
 export async function getDashboardUrl(ctx: Context) {
-  const config = new OpenApi.Config({
+  const config = new $OpenApi.Config({
     accessKeyId: env.ALIYUN_ACCESS_KEY_ID,
     accessKeySecret: env.ALIYUN_ACCESS_KEY_SECRET,
-    endpoint: "cn-shanghai.log.aliyuncs.com",
+    endpoint: "sts.cn-zhangjiakou.aliyuncs.com",
   });
 
-  const client = new Sls20201230.default(config);
-
-  const createTicketRequest = new $Sls20201230.CreateTicketRequest({
-    playAccessKeyId: env.ALIYUN_ACCESS_KEY_ID,
-    playAccessKeySecret: env.ALIYUN_ACCESS_KEY_SECRET,
+  const client = new Sts20150401.default(config);
+  const request = new $Sts20150401.AssumeRoleRequest({
+    roleArn: "acs:ram::1601928733909937:role/aliyun-log-read-role",
+    roleSessionName: "aliyun-log-read-role",
   });
+
   let res;
+  // assume role session
   try {
-    res = await client.createTicket(createTicketRequest);
-    if (res.statusCode !== 200 || !res.body.ticket) throw new Error();
+    res = await client.assumeRole(request);
+    if (res.statusCode !== 200 || !res.body.credentials) throw new Error();
   } catch (e) {
-    const msg = "fail to create aliyun sls ticket";
+    const msg = "fail to create assumeRole on aliyun";
+    logger.error(msg, e);
+    ctx.response.body = getErrorResult(msg);
+    return;
+  }
+  let signInRes;
+  // sign in
+  try {
+    signInRes = await (await fetch(
+      "https://signin.aliyun.com/federation?Action=GetSigninToken" +
+        "&AccessKeyId=" +
+        encodeURIComponent(res.body.credentials.accessKeyId ?? "") +
+        "&AccessKeySecret=" +
+        encodeURIComponent(res.body.credentials.accessKeySecret ?? "") +
+        "&SecurityToken=" +
+        encodeURIComponent(res.body.credentials.securityToken ?? "") +
+        "&TicketType=mini",
+    )).json();
+    if (!signInRes.SigninToken) throw new Error();
+  } catch (e) {
+    const msg = "fail to get SLS token on aliyun";
     logger.error(msg, e);
     ctx.response.body = getErrorResult(msg);
     return;
   }
 
-  const dashboardUrl =
-    `https://sls.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535?isShare=true&hideTopbar=true&hideSidebar=true&ignoreTabLocalStorage=true&hiddenModeSwitch=true&sls_ticket=${res.body.ticket}`;
+  const dashboardUrl = "https://signin.aliyun.com/federation?Action=Login" +
+    "&LoginUrl=" +
+    encodeURIComponent(
+      "https://sls.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535",
+    ) +
+    "&Destination=" +
+    encodeURIComponent(
+      "https://sls4service.console.aliyun.com/lognext/project/wycode/dashboard/dashboard-1681748176013-364535?isShare=true&hideTopbar=true&hideSidebar=true&ignoreTabLocalStorage=true&hiddenModeSwitch=true",
+    ) +
+    "&SigninToken=" +
+    encodeURIComponent(signInRes.SigninToken);
   ctx.response.body = getDataResult(dashboardUrl);
 }
