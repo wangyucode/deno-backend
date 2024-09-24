@@ -32,7 +32,7 @@ export async function getByOpenid(ctx: Context) {
 }
 
 export async function saveById(ctx: Context) {
-  const data = await ctx.request.body().value;
+  const data = await ctx.request.body.json();
   if (!data._id) ctx.throw(400, "_id required");
   const cc = db.collection(COLLECTIONS.CLIPBOARD);
   const result = await cc.updateOne(

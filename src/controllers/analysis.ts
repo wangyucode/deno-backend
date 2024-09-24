@@ -2,12 +2,12 @@ import {
   $OpenApi,
   $Sls20201230,
   $Sts20150401,
+  log,
   OpenApi,
   Sls20201230,
   Sts20150401,
 } from "../../deps.ts";
 import { env } from "../env.ts";
-import { logger } from "../logger.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
 
@@ -44,12 +44,12 @@ export async function getBlogs(ctx: Context) {
   );
 
   if (res1.statusCode !== 200) {
-    logger.error("failed to get log of previous week", res1);
+    log.error("failed to get log of previous week", res1);
     ctx.response.body = getErrorResult(JSON.stringify(res1));
     return;
   }
   if (res2.statusCode !== 200) {
-    logger.error("failed to get log of this week", res2);
+    log.error("failed to get log of this week", res2);
     ctx.response.body = getErrorResult(JSON.stringify(res2));
     return;
   }
@@ -84,7 +84,7 @@ export async function getDashboardUrl(ctx: Context) {
     if (res.statusCode !== 200 || !res.body.credentials) throw new Error();
   } catch (e) {
     const msg = "fail to create assumeRole on aliyun";
-    logger.error(msg, e);
+    log.error(msg, e);
     ctx.response.body = getErrorResult(msg);
     return;
   }
@@ -104,7 +104,7 @@ export async function getDashboardUrl(ctx: Context) {
     if (!signInRes.SigninToken) throw new Error();
   } catch (e) {
     const msg = "fail to get SLS token on aliyun";
-    logger.error(msg, e);
+    log.error(msg, e);
     ctx.response.body = getErrorResult(msg);
     return;
   }

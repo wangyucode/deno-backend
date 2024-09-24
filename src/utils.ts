@@ -1,5 +1,4 @@
-import { create, getNumericDate, verify } from "../deps.ts";
-import { logger } from "./logger.ts";
+import { create, getNumericDate, log, verify } from "../deps.ts";
 import { UserRole } from "./types.ts";
 
 import { AuthUser, CommonResult } from "./types.ts";
@@ -33,7 +32,7 @@ export async function getJwtPayload(token: string): Promise<AuthUser | null> {
   try {
     return await verify(token, key) as AuthUser;
   } catch (e) {
-    logger.warning(e.message);
+    log.warn(e.message);
     return null;
   }
 }

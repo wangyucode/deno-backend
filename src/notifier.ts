@@ -1,6 +1,5 @@
-import { SMTPClient } from "../deps.ts";
+import { log, SMTPClient } from "../deps.ts";
 import { env } from "./env.ts";
-import { logger } from "./logger.ts";
 
 // export async function sendDingTalkMessage(message: string): Promise<void> {
 //   const response = await fetch(
@@ -15,7 +14,7 @@ import { logger } from "./logger.ts";
 //     },
 //   );
 
-//   logger.info(`sent ding-talk message: ${await response.text()}`);
+//   log.info(`sent ding-talk message: ${await response.text()}`);
 // }
 
 const FROM_EMAIL = "wayne001@vip.qq.com";
@@ -45,6 +44,6 @@ export async function sendEmail(
   };
 
   await client.send(message);
-  logger.info(`sent email to: ${to}`);
+  log.info(`sent email to: ${to}`);
   await client.close();
 }

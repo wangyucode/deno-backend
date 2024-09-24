@@ -1,5 +1,5 @@
+import { log } from "../../deps.ts";
 import { isProd } from "../env.ts";
-import { logger } from "../logger.ts";
 import { COLLECTIONS, db } from "../mongo.ts";
 import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
@@ -28,7 +28,7 @@ export async function getWechatApps(ctx: Context) {
     /^https:\/\/servicewechat.com\/+(\w+)\/.*$/,
   )?.[1];
   if (!appid) {
-    logger.error(
+    log.error(
       "非法访问 /wechat/apps ->",
       ctx.request.headers.get("referer"),
     );

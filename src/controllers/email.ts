@@ -4,7 +4,7 @@ import { Context } from "../types.ts";
 import { getDataResult } from "../utils.ts";
 
 export async function send(ctx: Context) {
-  const { key, subject, content, to } = await ctx.request.body().value;
+  const { key, subject, content, to } = await ctx.request.body.json();
   if (!content) ctx.throw(400, "content is required");
   if (key !== env.MAIL_PASSWORD) ctx.throw(403, "invalid key");
   await sendEmail(content, subject, to);
