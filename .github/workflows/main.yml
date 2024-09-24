@@ -30,7 +30,7 @@ jobs:
           push: true
           tags: |
             wangyucode/deno-backend:latest
-            wangyucode/deno-backend:1.3.3
+            wangyucode/deno-backend:1.3.4
       - name: Call watchtower to check image
         run: |
           curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" wycode.cn:8086/v1/update

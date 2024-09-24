@@ -1,7 +1,7 @@
 import * as middleware from "./middleware.ts";
 import { router } from "./routes.ts";
 import { connectToMongo } from "./mongo.ts";
-import { Application, format, log, oakCors } from "../deps.ts";
+import { Application, log, oakCors } from "../deps.ts";
 import { env, isProd, loadEnv } from "./env.ts";
 import { setupLogger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
@@ -24,13 +24,13 @@ loadEnv()
   .then(afterServerStart)
   .then(() => {
     log.info(`server listening on ${env.PORT}`);
-    if (isProd()) {
-      sendEmail(
-        `deno-backend start successfully on: ${
-          format(new Date(), "yyyy/MM/dd HH:mm:ss")
-        }.`,
-      );
-    }
+    // if (isProd()) {
+    //   sendEmail(
+    //     `deno-backend start successfully on: ${
+    //       format(new Date(), "yyyy/MM/dd HH:mm:ss")
+    //     }.`,
+    //   );
+    // }
   })
   .catch((e) => {
     console.error("deno-backend 启动时发生错误", e);
