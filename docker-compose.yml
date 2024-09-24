@@ -1,7 +1,6 @@
-version: "3.9"
 services:
   mongo:
-    image: mongo:6.0.4
+    image: mongo:8.0.0
     restart: always
     container_name: mongo
     ports:
@@ -11,9 +10,12 @@ services:
     volumes:
       - ./mongo/db/:/data/db/
   mongo-express:
-    image: mongo-express:1.0.0-alpha.4
+    image: mongo-express:1.0.2
     container_name: mongo-express
     restart: unless-stopped
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password 
     ports:
       - 8081:8081
     depends_on:
@@ -28,17 +30,3 @@ services:
       - ./api-doc/openapi.yml:/openapi.yml:ro
     environment:
       - SWAGGER_JSON=/openapi.yml
-  # deno:
-  #   image: wangyucode/deno-backend
-  #   container_name: deno
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8083:8083
-  #   environment:
-  #     - TZ=Asia/Shanghai
-  #   depends_on:
-  #     - "mongo"
-  #   volumes:
-  #     - ./nginx/log/:/app/nginx/log
-  #     - ./log/:/app/log/
-  #     - ./.prod.env:/app/.env:ro

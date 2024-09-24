@@ -1,4 +1,3 @@
-import { helpers } from "../../deps.ts";
 import { logger } from "../logger.ts";
 import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
@@ -46,8 +45,7 @@ export function clear() {
 }
 
 export function create(ctx: Context) {
-  const queries = helpers.getQuery(ctx, { mergeParams: true });
-  const type = Number.parseInt(queries.type);
+  const type = Number.parseInt(ctx.request.url.searchParams.get("type") || "");
   if (
     !type || type > RoomType.CHAT
   ) {

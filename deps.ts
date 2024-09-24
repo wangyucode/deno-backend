@@ -1,11 +1,10 @@
 export {
   Application,
   Context,
-  helpers,
   Router,
   Status,
   STATUS_TEXT,
-} from "https://deno.land/x/oak@v11.1.0/mod.ts";
+} from "https://deno.land/x/oak@v17.0.0/mod.ts";
 export { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
 export {
   Database,
