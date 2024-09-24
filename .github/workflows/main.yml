@@ -30,7 +30,7 @@ jobs:
           push: true
           tags: |
             wangyucode/deno-backend:latest
-            wangyucode/deno-backend:1.3.2
+            wangyucode/deno-backend:1.3.3
       - name: Call watchtower to check image
         run: |
           curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" wycode.cn:8086/v1/update
@@ -42,4 +42,4 @@ jobs:
           localDir: 'api-doc'
           dryRun: false
           compress: true
-          remoteDir: '/root/data/nginx/www/swagger-ui/'
+          remoteDir: '/root/data/www/swagger-ui/'

@@ -1,4 +1,4 @@
-import { helpers, ObjectId, WxPay } from "../../deps.ts";
+import { ObjectId, WxPay } from "../../deps.ts";
 import { COLLECTIONS, db } from "../mongo.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
@@ -19,7 +19,7 @@ export async function getBanners(ctx: Context) {
 }
 
 export async function getGoods(ctx: Context) {
-  const { type } = helpers.getQuery(ctx, { mergeParams: true });
+  const type = ctx.request.url.searchParams.get("type");
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const result = await cc.find({ type }, {
     sort: { track: 1 },
@@ -28,7 +28,7 @@ export async function getGoods(ctx: Context) {
 }
 
 export async function putGoods(ctx: Context) {
-  const data = await ctx.request.body().value;
+  const data = await ctx.request.body.json();
   const track = data.track;
   if (!track) ctx.throw(400, "track required");
 
@@ -48,7 +48,7 @@ export async function putGoods(ctx: Context) {
 }
 
 export async function getOrder(ctx: Context) {
-  const { id } = helpers.getQuery(ctx, { mergeParams: true });
+  const id = ctx.request.url.searchParams.get("id");
   const cc = db.collection(COLLECTIONS.VENDING_ORDER);
   const result = id
     ? await cc.findOne({ _id: new ObjectId(id) })
@@ -57,7 +57,7 @@ export async function getOrder(ctx: Context) {
 }
 
 export async function getCode(ctx: Context) {
-  const { code } = helpers.getQuery(ctx, { mergeParams: true });
+  const code = ctx.request.url.searchParams.get("code");
   const cc = db.collection(COLLECTIONS.VENDING_CODE);
   if (!code) {
     const result = await cc.find({ usedTime: { $exists: false } }).toArray();
@@ -79,7 +79,7 @@ export async function getCode(ctx: Context) {
 }
 
 export async function postCode(ctx: Context) {
-  const data = await ctx.request.body().value;
+  const data = await ctx.request.body.json();
   if (!data.code || !data.goods || !data.goods.length) ctx.throw(400);
   const cc = db.collection(COLLECTIONS.VENDING_CODE);
 
@@ -87,8 +87,9 @@ export async function postCode(ctx: Context) {
 }
 
 export async function reduce(ctx: Context) {
-  const query = helpers.getQuery(ctx, { mergeParams: true });
-  const track = Number.parseInt(query.track);
+  const track = Number.parseInt(
+    ctx.request.url.searchParams.get("track") || "",
+  );
   const cc = db.collection(COLLECTIONS.VENDING_GOODS);
   const result = await cc.updateOne({ track }, { $inc: { stock: -1 } });
   ctx.response.body = getDataResult(result);

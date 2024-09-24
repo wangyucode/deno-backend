@@ -1,4 +1,4 @@
-import { helpers, ObjectId } from "../../deps.ts";
+import { ObjectId } from "../../deps.ts";
 import { isProd } from "../env.ts";
 import { logger } from "../logger.ts";
 import { COLLECTIONS, db } from "../mongo.ts";
@@ -7,7 +7,9 @@ import { Context } from "../types.ts";
 import { getDataResult } from "../utils.ts";
 
 export async function getComments(ctx: Context) {
-  const { a, k, t } = helpers.getQuery(ctx, { mergeParams: true });
+  const a = ctx.request.url.searchParams.get("a");
+  const k = ctx.request.url.searchParams.get("k");
+  const t = ctx.request.url.searchParams.get("t");
 
   if (!a) ctx.throw(400, "a required");
   if (!k) ctx.throw(400, "k required");
@@ -54,9 +56,7 @@ export async function getComments(ctx: Context) {
 }
 
 export async function postComment(ctx: Context) {
-  const { type, content, app, key, topic, user, to, toId } = await ctx.request
-    .body()
-    .value;
+  const { type, content, app, key, topic, user, to, toId } = await ctx.request.body.json();
   logger.info("postComment-->", type, content, app, key, topic, user, to, toId);
   // 评论类型，0.评论，1.点赞
   if ((typeof type) !== "number" || type < 0 || type > 1) {
