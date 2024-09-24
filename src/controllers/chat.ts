@@ -1,4 +1,4 @@
-import { logger } from "../logger.ts";
+import { log } from "../../deps.ts";
 import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
 import { Message, MessageType } from "./chat/message.ts";
@@ -28,7 +28,7 @@ export function clear() {
   rooms.forEach((room) => {
     room.users.forEach((user) => {
       if (now.getTime() - user.lastSeen.getTime() > CLEAR_INTERVAL) {
-        logger.info(`[ws] [clear] ${room.id} ${user.id} offline`);
+        log.info(`[ws] [clear] ${room.id} ${user.id} offline`);
         room.remove(user.id);
         room.send(
           new Message(MessageType.OFFLINE, user.id, new Date(), "system"),
@@ -37,7 +37,7 @@ export function clear() {
       }
     });
     if (room.users.size === 0) {
-      logger.info(`[ws] [clear] remove ${room.id}`);
+      log.info(`[ws] [clear] remove ${room.id}`);
       rooms.delete(Number.parseInt(room.id));
       unusedId.push(Number.parseInt(room.id));
     }
@@ -76,7 +76,9 @@ export function create(ctx: Context) {
 
 // Join a room
 export function join(ctx: Context) {
-  const { rid, type, uid } = helpers.getQuery(ctx, { mergeParams: true });
+  const rid = ctx.request.url.searchParams.get("rid");
+  const type = ctx.request.url.searchParams.get("type") || "";
+  const uid = ctx.request.url.searchParams.get("uid");
   if (!rid) ctx.throw(400, "id required");
   const roomType = Number.parseInt(type);
   if (

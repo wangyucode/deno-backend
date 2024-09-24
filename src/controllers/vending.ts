@@ -1,8 +1,7 @@
-import { ObjectId, WxPay } from "../../deps.ts";
+import { log, ObjectId, WxPay } from "../../deps.ts";
 import { COLLECTIONS, db } from "../mongo.ts";
 import { Context } from "../types.ts";
 import { getDataResult, getErrorResult } from "../utils.ts";
-import { logger } from "../logger.ts";
 import { env } from "../env.ts";
 import { sendEmail } from "../notifier.ts";
 
@@ -112,14 +111,15 @@ export function heartbeat(ctx: Context) {
 }
 
 export function putHeartbeat(ctx: Context) {
-  const { field } = helpers.getQuery(ctx, { mergeParams: true });
+  const field = ctx.request.url.searchParams.get("field");
+  if (!field) ctx.throw(400);
   heartbeatContent[field] = true;
   ctx.response.body = getDataResult("ok");
 }
 
 export async function createOrder(ctx: Context) {
-  const { description, total, goodsDetail } = await ctx.request.body().value;
-  logger.info("createOrder:", description, total, goodsDetail.length);
+  const { description, total, goodsDetail } = await ctx.request.body.json();
+  log.info("createOrder:", description, total, goodsDetail.length);
   if (!description || !total || !goodsDetail || !goodsDetail.length) {
     ctx.throw(400);
   }
@@ -153,7 +153,7 @@ export async function createOrder(ctx: Context) {
   );
   const data = await res.json();
   data.out_trade_no = out_trade_no;
-  logger.info("createOrder: data: ", JSON.stringify(data));
+  log.info("createOrder: data: ", JSON.stringify(data));
   if (res.status === 200) {
     const cc = db.collection(COLLECTIONS.VENDING_ORDER);
     await cc.insertOne({
@@ -171,8 +171,8 @@ export async function createOrder(ctx: Context) {
 }
 
 export async function notify(ctx: Context) {
-  const body = await ctx.request.body().value;
-  logger.info(
+  const body = await ctx.request.body.json();
+  log.info(
     "wx notification",
     JSON.stringify(body),
     JSON.stringify(ctx.request.headers),
@@ -186,7 +186,7 @@ export async function notify(ctx: Context) {
     timestamp: ctx.request.headers.get("wechatpay-timestamp") || 0,
   };
   const ret = await pay.verifySign(params);
-  logger.info("验签结果:", ret);
+  log.info("验签结果:", ret);
   if (!ret) ctx.throw(401);
 
   if (body.event_type === "TRANSACTION.SUCCESS") {
@@ -197,7 +197,7 @@ export async function notify(ctx: Context) {
       // deno-lint-ignore no-explicit-any
     ) as any;
     const resultString = JSON.stringify(result);
-    logger.info("解密结果:", resultString);
+    log.info("解密结果:", resultString);
     if (!result) ctx.throw(403, "解密失败");
 
     const cc = db.collection(COLLECTIONS.VENDING_ORDER);
@@ -231,7 +231,7 @@ export function getWxPay() {
         },
       });
       const data = await res.json();
-      logger.info(JSON.stringify(data));
+      log.info(JSON.stringify(data));
       data.status = res.status;
       return data;
     };

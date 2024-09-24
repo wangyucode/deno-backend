@@ -19,8 +19,8 @@ export {
   verify,
 } from "https://deno.land/x/djwt@v2.8/mod.ts";
 export type { Payload } from "https://deno.land/x/djwt@v2.8/mod.ts";
-export * as log from "https://deno.land/std@0.178.0/log/mod.ts";
-export { format } from "https://deno.land/std@0.178.0/datetime/format.ts";
+export * as log from "https://deno.land/std@0.224.0/log/mod.ts";
+export { format } from "https://deno.land/std@0.224.0/datetime/format.ts";
 export { lodash } from "https://deno.land/x/deno_ts_lodash@0.0.1/mod.ts";
 export { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 export { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";

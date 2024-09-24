@@ -1,4 +1,4 @@
-import { logger } from "../../logger.ts";
+import { log } from "../../../deps.ts";
 import { Message, MessageType } from "./message.ts";
 import { Room } from "./room.ts";
 
@@ -10,7 +10,7 @@ export class User {
     public websocket: WebSocket,
   ) {
     websocket.addEventListener("message", (e) => {
-      logger.debug(`[ws] ${e.data}`);
+      log.debug(`[ws] ${e.data}`);
       this.onMessage(JSON.parse(e.data));
     });
   }
@@ -23,7 +23,7 @@ export class User {
     }
     const room = this.room;
     if (!room) return;
-    logger.info(`[ws] ${room.id} ${message.type} ${message.content}`);
+    log.info(`[ws] ${room.id} ${message.type} ${message.content}`);
     message.sender = this.id;
 
     if (message.type === MessageType.LEAVE) {

@@ -4,7 +4,7 @@ import { AuthUser, Context } from "../types.ts";
 import { getAuthToken, getDataResult } from "../utils.ts";
 
 export async function login(ctx: Context): Promise<void> {
-  const data = await ctx.request.body().value;
+  const data = await ctx.request.body.json();
   if (!data || !data.name) ctx.throw(400, "name required");
   if (!data.password) ctx.throw(400, "password required");
 

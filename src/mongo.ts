@@ -1,6 +1,5 @@
-import { Database, MongoClient } from "../deps.ts";
+import { Database, log, MongoClient } from "../deps.ts";
 import { env } from "./env.ts";
-import { logger } from "./logger.ts";
 import { sleep } from "./utils.ts";
 
 const DB_NAME = "wycode";
@@ -27,14 +26,14 @@ export enum CONFIG_KEYS {
 
 export async function connectToMongo(): Promise<void> {
   try {
-    logger.info("connecting to mongodb...");
+    log.info("connecting to mongodb...");
     const client = new MongoClient();
     // Connect the client to the server
     await client.connect(env.MONGODB_URI);
     // Establish and verify connection
     db = client.database(DB_NAME);
     await client.runCommand(DB_NAME, { ping: 1 });
-    logger.info("Connected successfully to mongodb");
+    log.info("Connected successfully to mongodb");
   } catch {
     if (retry < 10) {
       retry++;

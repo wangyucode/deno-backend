@@ -1,6 +1,5 @@
-import { Status, STATUS_TEXT } from "../deps.ts";
+import { log, Status, STATUS_TEXT } from "../deps.ts";
 import { env, isProd } from "./env.ts";
-import { logger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
 import { AuthUser, Context, UserRole } from "./types.ts";
 import { getErrorResult, getJwtPayload } from "./utils.ts";
@@ -17,7 +16,7 @@ export async function errorMiddleware(
     ctx.response.status = status;
     ctx.response.body = getErrorResult(message);
     if (status >= 500) {
-      logger.error(status, message, err.stack);
+      log.error(status, message, err.stack);
       if (isProd()) {
         sendEmail(`Unexpected error: ${status} ${message} \n ${err.stack}`);
       }
@@ -58,5 +57,13 @@ export async function apiKeyGuard(
 ): Promise<void> {
   const apiKey = ctx.request.headers.get("X-API-Key");
   if (apiKey !== env.VENDING_API_KEY) ctx.throw(401);
+  await next();
+}
+
+export async function debugLogger(
+  ctx: Context,
+  next: () => Promise<unknown>,
+): Promise<void> {
+  log.info(ctx.request.method, ctx.request.url);
   await next();
 }

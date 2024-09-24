@@ -1,6 +1,5 @@
-import { ObjectId } from "../../deps.ts";
+import { log, ObjectId } from "../../deps.ts";
 import { isProd } from "../env.ts";
-import { logger } from "../logger.ts";
 import { COLLECTIONS, db } from "../mongo.ts";
 import { sendEmail } from "../notifier.ts";
 import { Context } from "../types.ts";
@@ -58,7 +57,7 @@ export async function getComments(ctx: Context) {
 export async function postComment(ctx: Context) {
   const { type, content, app, key, topic, user, to, toId } = await ctx.request
     .body.json();
-  logger.info("postComment-->", type, content, app, key, topic, user, to, toId);
+  log.info("postComment-->", type, content, app, key, topic, user, to, toId);
   // 评论类型，0.评论，1.点赞
   if ((typeof type) !== "number" || type < 0 || type > 1) {
     ctx.throw(400, "评论类型不合法");

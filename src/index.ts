@@ -1,14 +1,15 @@
 import * as middleware from "./middleware.ts";
 import { router } from "./routes.ts";
 import { connectToMongo } from "./mongo.ts";
-import { Application, format, oakCors } from "../deps.ts";
+import { Application, format, log, oakCors } from "../deps.ts";
 import { env, isProd, loadEnv } from "./env.ts";
-import { logger, setupLogger } from "./logger.ts";
+import { setupLogger } from "./logger.ts";
 import { sendEmail } from "./notifier.ts";
 import { afterServerStart } from "./setup.ts";
 
 function startHttpServer() {
   new Application()
+    .use(middleware.debugLogger)
     .use(oakCors())
     .use(middleware.errorMiddleware)
     .use(router.routes())
@@ -22,7 +23,7 @@ loadEnv()
   .then(startHttpServer)
   .then(afterServerStart)
   .then(() => {
-    logger.info(`server listening on ${env.PORT}`);
+    log.info(`server listening on ${env.PORT}`);
     if (isProd()) {
       sendEmail(
         `deno-backend start successfully on: ${
@@ -36,5 +37,5 @@ loadEnv()
     if (isProd()) {
       sendEmail(`deno-backend start failed: ${e.toString()}`);
     }
-    logger.error("deno-backend 启动时发生错误", e);
+    log.error("deno-backend 启动时发生错误", e);
   });
