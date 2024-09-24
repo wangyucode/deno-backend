@@ -12,7 +12,7 @@ export async function setConfig(ctx: Context) {
 }
 
 export async function getConfig(ctx: Context) {
-  const key  = ctx.request.url.searchParams.get("key");
+  const key = ctx.request.url.searchParams.get("key");
   if (!key) ctx.throw(400, "key required");
   const config = await getConfigInternal(key);
   if (!config) ctx.throw(404, "配置不存在");
