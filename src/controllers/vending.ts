@@ -111,8 +111,8 @@ export function heartbeat(ctx: Context) {
 }
 
 export function putHeartbeat(ctx: Context) {
-  const field  = ctx.request.url.searchParams.get("field");
-  if(!field) ctx.throw(400);
+  const field = ctx.request.url.searchParams.get("field");
+  if (!field) ctx.throw(400);
   heartbeatContent[field] = true;
   ctx.response.body = getDataResult("ok");
 }

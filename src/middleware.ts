@@ -59,3 +59,11 @@ export async function apiKeyGuard(
   if (apiKey !== env.VENDING_API_KEY) ctx.throw(401);
   await next();
 }
+
+export async function debugLogger(
+  ctx: Context,
+  next: () => Promise<unknown>,
+): Promise<void> {
+  log.info(ctx.request.method, ctx.request.url);
+  await next();
+}

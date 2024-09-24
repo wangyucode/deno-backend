@@ -9,6 +9,7 @@ import { afterServerStart } from "./setup.ts";
 
 function startHttpServer() {
   new Application()
+    .use(middleware.debugLogger)
     .use(oakCors())
     .use(middleware.errorMiddleware)
     .use(router.routes())
